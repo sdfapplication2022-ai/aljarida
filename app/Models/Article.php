@@ -13,8 +13,10 @@ class Article extends Model
     use HasUploads;
 
     protected $fillable = [
-        'title','content','slug','image','video_url','category_id',
-        'user_id','is_published','is_featured','published_at','views',
+        'title', 'slug', 'excerpt', 'content',
+        'meta_title', 'meta_description',
+        'image', 'video_url', 'category_id', 'user_id',
+        'is_published', 'is_featured', 'published_at', 'views',
     ];
 
     protected $casts = [
@@ -112,8 +114,12 @@ class Article extends Model
     /** Extrait texte court pour les cartes. */
     public function getExcerptAttribute(): string
     {
+        // ✅ Priorité à l'extrait saisi manuellement dans le formulaire
+        if (! empty($this->attributes['excerpt'])) {
+            return (string) $this->attributes['excerpt'];
+        }
+        // Sinon : auto-généré depuis le contenu
         $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
         return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
     }
 

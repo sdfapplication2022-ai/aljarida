@@ -16,21 +16,39 @@ class AdminResources
         $img = 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096';
 
         return [
-            'articles' => [
-                'model' => Article::class, 'title' => 'المقالات', 'single' => 'مقال', 'icon' => 'fa-newspaper',
-                'with' => ['category'], 'columns' => ['id' => '#', 'title' => 'العنوان', 'category.name' => 'القسم', 'is_published' => 'منشور', 'views' => 'المشاهدات', 'published_at' => 'تاريخ النشر'],
-                'search' => ['title'],
-                'fields' => [
-                    ['title', 'العنوان', 'text', 'required|string|max:255'],
-                    ['category_id', 'القسم', 'select', 'required|exists:categories,id', ['source' => Category::class, 'label' => 'name']],
-                    ['content', 'المحتوى (HTML)', 'richtext', 'required|string'],
-                    ['image', 'الصورة', 'file', $img],
-                    ['video_url', 'فيديو (mp4)', 'file', 'nullable|file|mimes:mp4|max:51200'],
-                    ['tags', 'الوسوم', 'tags', 'nullable|array', ['source' => Tag::class, 'label' => 'name']],
-                    ['is_published', 'منشور', 'checkbox', 'boolean'],
-                    ['published_at', 'تاريخ النشر', 'datetime', 'nullable|date'],
+                'articles' => [
+                    'model'    => \App\Models\Article::class,
+                    'title'    => 'المقالات',
+                    'single'   => 'مقال',
+                    'icon'     => 'fa-newspaper',
+                    'with'     => ['category', 'user'],
+                    'search'   => ['title', 'content', 'excerpt'],
+                    'slugFrom' => 'title',
+                    'formView' => 'admin.articles.form',   // 👈 vue pro dédiée
+
+                    // ⚠️ TOUS les champs doivent figurer ici pour que save() les récupère
+                    'fields' => [
+                        ['title',            'العنوان',            'text',     'required|string|max:255'],
+                        ['slug',             'الرابط',             'text',     'nullable|string|max:255'],
+                        ['excerpt',          'مقتطف',              'textarea', 'nullable|string|max:500'],
+                        ['content',          'المحتوى',            'richtext', 'required|string'],
+                        ['meta_title',       'عنوان SEO',          'text',     'nullable|string|max:70'],
+                        ['meta_description', 'وصف SEO',            'textarea', 'nullable|string|max:170'],
+                        ['image',            'الصورة البارزة',     'file',     'nullable|image|max:8192'],
+                        ['video_url',        'فيديو',              'file',     'nullable|file|mimes:mp4|max:51200'],
+                        ['category_id',      'التصنيف',            'select',   'nullable|exists:categories,id',
+                            ['source' => \App\Models\Category::class, 'label' => 'name']],
+                        ['published_at',     'تاريخ النشر',        'datetime', 'nullable|date'],
+                        ['is_published',     'منشور',              'checkbox', 'nullable|boolean'],
+                        ['is_featured',      'مميز',               'checkbox', 'nullable|boolean'],
+                    ],
+
+                    'columns' => [
+                        'title'     => 'العنوان',
+                        'is_published' => 'الحالة',
+                        'published_at' => 'تاريخ النشر',
+                    ],
                 ],
-            ],
             'categories' => [
                 'model' => Category::class, 'title' => 'الأقسام', 'single' => 'قسم', 'icon' => 'fa-folder', 'slugFrom' => 'name',
                 'columns' => ['id' => '#', 'name' => 'الاسم', 'slug' => 'الرابط'], 'search' => ['name'],

@@ -46,8 +46,8 @@ body {
     flex-shrink: 0; /* Empêche le logo de rétrécir */
 }
 
-.sidebar-brand i { 
-    color: var(--accent); 
+.sidebar-brand i {
+    color: var(--accent);
 }
 
 .sidebar-nav {
@@ -80,11 +80,11 @@ body {
     transition: all 0.2s;
 }
 
-.sidebar-nav a i { 
-    width: 25px; 
-    text-align: center; 
-    margin-left: 10px; 
-    font-size: 1.1rem; 
+.sidebar-nav a i {
+    width: 25px;
+    text-align: center;
+    margin-left: 10px;
+    font-size: 1.1rem;
 }
 
 .sidebar-nav a:hover {
@@ -98,10 +98,10 @@ body {
     box-shadow: 0 4px 12px rgba(221, 250, 99, 0.3);
 }
 
-.sidebar-footer { 
-    padding: 15px; 
+.sidebar-footer {
+    padding: 15px;
     background: var(--brand);
-    border-top: 1px solid rgba(255,255,255,0.1); 
+    border-top: 1px solid rgba(255,255,255,0.1);
     flex-shrink: 0; /* Garde toujours le bouton déconnexion visible en bas */
 }
 
@@ -128,104 +128,104 @@ body {
     z-index: 999;
 }
 
-.page-title { 
-    font-size: 1.25rem; 
-    font-weight: 700; 
-    margin: 0; 
-    color: var(--brand); 
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--brand);
 }
 
-.user-profile { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-    font-weight: 600; 
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
 }
 
-.avatar { 
-    width: 40px; 
-    height: 40px; 
-    background: var(--brand-2); 
-    color: #fff; 
-    border-radius: 50%; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-weight: bold; 
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--brand-2);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
-.content-area { 
-    padding: 30px; 
-    flex: 1; 
+.content-area {
+    padding: 30px;
+    flex: 1;
 }
 
 /* =========================================
    CARDS, TABLES & FORMS
    ========================================= */
-.card { 
-    border: none; 
-    border-radius: 12px; 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
-.table > :not(caption) > * > * { 
-    padding: 1rem 1.5rem; 
-    border-bottom-color: #edf2f0; 
+.table > :not(caption) > * > * {
+    padding: 1rem 1.5rem;
+    border-bottom-color: #edf2f0;
 }
 
-.table thead { 
-    background-color: #f8faf9; 
-    color: var(--brand); 
-    font-weight: 700; 
+.table thead {
+    background-color: #f8faf9;
+    color: var(--brand);
+    font-weight: 700;
 }
 
-.form-control, .form-select { 
-    border-radius: 8px; 
-    border-color: #dee2e6; 
-    padding: 0.6rem 1rem; 
+.form-control, .form-select {
+    border-radius: 8px;
+    border-color: #dee2e6;
+    padding: 0.6rem 1rem;
 }
 
-.form-control:focus, .form-select:focus { 
-    border-color: var(--brand-2); 
-    box-shadow: 0 0 0 0.25rem rgba(10, 122, 103, 0.15); 
+.form-control:focus, .form-select:focus {
+    border-color: var(--brand-2);
+    box-shadow: 0 0 0 0.25rem rgba(10, 122, 103, 0.15);
 }
 
-.btn-success { 
-    background-color: var(--brand); 
-    border-color: var(--brand); 
-    border-radius: 8px; 
-    padding: 0.6rem 1.5rem; 
-    font-weight: 600; 
+.btn-success {
+    background-color: var(--brand);
+    border-color: var(--brand);
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
 }
 
-.btn-success:hover { 
-    background-color: var(--brand-2); 
-    border-color: var(--brand-2); 
+.btn-success:hover {
+    background-color: var(--brand-2);
+    border-color: var(--brand-2);
 }
 
 /* =========================================
    JODIT EDITOR (RTL)
    ========================================= */
-.jodit-container { 
-    direction: rtl; 
+.jodit-container {
+    direction: rtl;
 }
-.jodit-wysiwyg { 
-    min-height: 300px; 
+.jodit-wysiwyg {
+    min-height: 300px;
 }
 
 /* =========================================
    LOGIN PAGE (Premium & Animé)
    ========================================= */
 .login-page-body {
-    height: 100vh; 
-    margin: 0; 
+    height: 100vh;
+    margin: 0;
     overflow: hidden;
     background: #fff;
 }
 
-.login-wrapper { 
-    display: flex; 
-    height: 100vh; 
+.login-wrapper {
+    display: flex;
+    height: 100vh;
     width: 100vw;
 }
 
@@ -267,15 +267,15 @@ body {
     animation-delay: 3s;
 }
 
-.login-left h1 { 
-    font-weight: 800; 
-    font-size: 3.5rem; 
-    z-index: 1; 
+.login-left h1 {
+    font-weight: 800;
+    font-size: 3.5rem;
+    z-index: 1;
     text-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-.login-left h1 i { 
-    color: var(--accent); 
+.login-left h1 i {
+    color: var(--accent);
     margin-left: 10px;
 }
 
@@ -286,24 +286,24 @@ body {
 }
 
 /* --- Partie Droite : Formulaire (Carte Flottante) --- */
-.login-right { 
-    flex: 1; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    background: #f8faf9; 
+.login-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8faf9;
     position: relative;
 }
 
-.login-card { 
-    width: 100%; 
-    max-width: 420px; 
+.login-card {
+    width: 100%;
+    max-width: 420px;
     padding: 45px;
     background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 20px 50px rgba(5, 83, 70, 0.08); /* Ombre teintée avec la couleur du brand */
     border: 1px solid rgba(0,0,0,0.02);
-    
+
     /* Animation d'entrée */
     animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -338,23 +338,23 @@ body {
 }
 
 /* Bouton de connexion */
-.btn-brand { 
-    background: var(--brand); 
-    color: white; 
-    padding: 0.9rem; 
-    border-radius: 10px; 
-    font-weight: 700; 
+.btn-brand {
+    background: var(--brand);
+    color: white;
+    padding: 0.9rem;
+    border-radius: 10px;
+    font-weight: 700;
     font-size: 1.1rem;
-    width: 100%; 
-    border: none; 
+    width: 100%;
+    border: none;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-.btn-brand:hover { 
-    background: var(--brand-2); 
-    color: white; 
+.btn-brand:hover {
+    background: var(--brand-2);
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(10, 122, 103, 0.3);
 }
@@ -375,11 +375,64 @@ body {
     100% { transform: translateY(0px) scale(1); }
 }
 
-@media (max-width: 768px) { 
-    .login-left { display: none; } 
+@media (max-width: 768px) {
+    .login-left { display: none; }
     .login-right { background: linear-gradient(135deg, #055346, #0a7a67); }
     .login-card { margin: 20px; padding: 30px; }
 }
-@media (max-width: 768px) { 
-    .login-left { display: none; } 
+@media (max-width: 768px) {
+    .login-left { display: none; }
 }
+/* =========================================
+   PRO ARTICLE FORM — Drag & Drop + Polish
+   ========================================= */
+.dropzone-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    background: #f9fafb;
+    transition: all .2s ease;
+}
+.dropzone-area:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+}
+.dropzone-area.dragging {
+    border-color: var(--brand);
+    background: rgba(10,122,103,.08);
+}
+.dropzone-area.dropzone-sm { padding: 18px 12px; }
+
+.dz-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: #fff; border: 1px solid #e5e7eb;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px; font-size: 20px; color: #9ca3af;
+}
+.dz-icon-sm {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #fff; border: 1px solid #e5e7eb;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px; font-size: 16px; color: #9ca3af;
+}
+
+/* Title input style underline */
+#article-title {
+    font-size: 1.75rem;
+    padding: 10px 0 !important;
+    transition: border-color .2s;
+}
+#article-title:focus {
+    border-bottom-color: var(--brand) !important;
+    box-shadow: none !important;
+}
+
+/* Jodit container */
+.jodit-container { border-radius: 8px; overflow: hidden; }
+.jodit-wysiwyg { min-height: 400px; }
+
+/* Badge subtles (Bootstrap 5.3+) */
+.bg-success-subtle  { background-color: #d1fae5 !important; }
+.bg-secondary-subtle { background-color: #e5e7eb !important; }

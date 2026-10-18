@@ -43,7 +43,9 @@ class ResourceController extends Controller
     {
         $cfg = $this->cfg($resource);
         abort_unless($cfg['create'], 404);
-        return view('admin.crud.form', ['cfg' => $cfg, 'item' => new $cfg['model']]);
+
+        $view = $cfg['formView'] ?? 'admin.crud.form';   // 👈
+        return view($view, ['cfg' => $cfg, 'item' => new $cfg['model']]);
     }
 
     public function store(Request $request, string $resource)
@@ -61,7 +63,9 @@ class ResourceController extends Controller
     {
         $cfg = $this->cfg($resource);
         abort_unless($cfg['edit'], 404);
-        return view('admin.crud.form', ['cfg' => $cfg, 'item' => $cfg['model']::findOrFail($id)]);
+
+        $view = $cfg['formView'] ?? 'admin.crud.form';   // 👈
+        return view($view, ['cfg' => $cfg, 'item' => $cfg['model']::findOrFail($id)]);
     }
 
     public function update(Request $request, string $resource, int $id)
