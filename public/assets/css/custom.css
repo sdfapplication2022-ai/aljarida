@@ -1,0 +1,41 @@
+:root{
+  --brand:#055346; --brand-2:#0a7a67; --accent:#DDFA63; --ink:#14201e; --muted:#5D6261;
+  --ztc-family-font1:'Cairo',sans-serif;
+}
+body{font-family:'Cairo',sans-serif;color:var(--ink);line-height:1.8}
+h1,h2,h3,h4,h5,h6,p,a,input,textarea,select,button{font-family:'Cairo',sans-serif!important}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.skip-link{position:absolute;top:-60px;right:8px;background:var(--brand);color:#fff;padding:8px 14px;z-index:99999;border-radius:6px}
+.skip-link:focus{top:8px}
+
+/* Bandeau عاجل */
+.news-ticker{background:var(--brand);color:#fff;font-size:14px;padding:6px 0;position:relative;z-index:1000}
+.news-ticker__label{background:#d62828;padding:2px 12px;border-radius:4px;font-weight:700;white-space:nowrap}
+.news-ticker__track{flex:1;overflow:hidden;white-space:nowrap}
+.news-ticker__track a{color:#fff;display:inline-block;padding-inline-end:48px;animation:ticker 40s linear infinite}
+.news-ticker__track:hover a{animation-play-state:paused}
+.news-ticker__date{opacity:.85;white-space:nowrap}
+@keyframes ticker{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion:reduce){.news-ticker__track a{animation:none}}
+
+/* Header : la barre sticky ne doit pas masquer le contenu */
+.header-area.homepage12{position:sticky;top:0;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+
+/* Cartes articles */
+.news-card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.07);height:100%;display:flex;flex-direction:column;margin-bottom:30px}
+.news-card__img{display:block;aspect-ratio:3/2;overflow:hidden}
+.news-card__img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.news-card:hover .news-card__img img{transform:scale(1.06)}
+.news-card__body{padding:18px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.news-card__cat{color:var(--brand);font-weight:700;font-size:13px}
+.news-card h3{font-size:19px;line-height:1.6;margin:0}
+.news-card h3 a{color:var(--ink)}
+.news-card h3 a:hover{color:var(--brand-2)}
+.news-card p{color:var(--muted);font-size:15px;margin:0}
+.news-card__meta{margin-top:auto;color:var(--muted);font-size:13px}
+
+/* Contenu d'article : lisibilité */
+.blog-content,.article-content{font-size:18px;line-height:2}
+.blog-content img,.article-content img{max-width:100%;height:auto;border-radius:8px}
+
+.back-to-top{position:fixed;bottom:24px;left:24px;width:44px;height:44px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;z-index:999;box-shadow:0 4px 14px rgba(0,0,0,.25)}

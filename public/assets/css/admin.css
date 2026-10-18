@@ -1,0 +1,385 @@
+/* =========================================
+   VARIABLES & GLOBAL
+   ========================================= */
+:root {
+    --brand: #055346;
+    --brand-2: #0a7a67;
+    --accent: #DDFA63;
+    --sidebar-width: 260px;
+    --bg-light: #f4f6f9;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg-light);
+    color: #14201e;
+    overflow-x: hidden;
+}
+
+/* =========================================
+   SIDEBAR (Menu Latéral Fixe)
+   ========================================= */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--brand);
+    height: 100vh; /* Fixe la hauteur à 100% de l'écran */
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+}
+
+.sidebar-brand {
+    padding: 20px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0; /* Empêche le logo de rétrécir */
+}
+
+.sidebar-brand i { 
+    color: var(--accent); 
+}
+
+.sidebar-nav {
+    padding: 15px 10px;
+    flex: 1; /* Prend tout l'espace disponible au milieu */
+    overflow-y: auto; /* Permet le défilement si le menu est trop long */
+}
+
+/* Personnalisation de la barre de défilement (Scrollbar) */
+.sidebar-nav::-webkit-scrollbar {
+    width: 5px;
+}
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav a {
+    color: rgba(255,255,255,0.75);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.sidebar-nav a i { 
+    width: 25px; 
+    text-align: center; 
+    margin-left: 10px; 
+    font-size: 1.1rem; 
+}
+
+.sidebar-nav a:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.sidebar-nav a.active {
+    background: var(--accent);
+    color: var(--brand);
+    box-shadow: 0 4px 12px rgba(221, 250, 99, 0.3);
+}
+
+.sidebar-footer { 
+    padding: 15px; 
+    background: var(--brand);
+    border-top: 1px solid rgba(255,255,255,0.1); 
+    flex-shrink: 0; /* Garde toujours le bouton déconnexion visible en bas */
+}
+
+/* =========================================
+   MAIN WRAPPER & TOPBAR
+   ========================================= */
+.main-wrapper {
+    margin-right: var(--sidebar-width);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    background: #fff;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-shadow: 0 1px 15px rgba(0,0,0,0.04);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.page-title { 
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    margin: 0; 
+    color: var(--brand); 
+}
+
+.user-profile { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    font-weight: 600; 
+}
+
+.avatar { 
+    width: 40px; 
+    height: 40px; 
+    background: var(--brand-2); 
+    color: #fff; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold; 
+}
+
+.content-area { 
+    padding: 30px; 
+    flex: 1; 
+}
+
+/* =========================================
+   CARDS, TABLES & FORMS
+   ========================================= */
+.card { 
+    border: none; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03); 
+}
+
+.table > :not(caption) > * > * { 
+    padding: 1rem 1.5rem; 
+    border-bottom-color: #edf2f0; 
+}
+
+.table thead { 
+    background-color: #f8faf9; 
+    color: var(--brand); 
+    font-weight: 700; 
+}
+
+.form-control, .form-select { 
+    border-radius: 8px; 
+    border-color: #dee2e6; 
+    padding: 0.6rem 1rem; 
+}
+
+.form-control:focus, .form-select:focus { 
+    border-color: var(--brand-2); 
+    box-shadow: 0 0 0 0.25rem rgba(10, 122, 103, 0.15); 
+}
+
+.btn-success { 
+    background-color: var(--brand); 
+    border-color: var(--brand); 
+    border-radius: 8px; 
+    padding: 0.6rem 1.5rem; 
+    font-weight: 600; 
+}
+
+.btn-success:hover { 
+    background-color: var(--brand-2); 
+    border-color: var(--brand-2); 
+}
+
+/* =========================================
+   JODIT EDITOR (RTL)
+   ========================================= */
+.jodit-container { 
+    direction: rtl; 
+}
+.jodit-wysiwyg { 
+    min-height: 300px; 
+}
+
+/* =========================================
+   LOGIN PAGE (Premium & Animé)
+   ========================================= */
+.login-page-body {
+    height: 100vh; 
+    margin: 0; 
+    overflow: hidden;
+    background: #fff;
+}
+
+.login-wrapper { 
+    display: flex; 
+    height: 100vh; 
+    width: 100vw;
+}
+
+/* --- Partie Gauche : Branding Animé --- */
+.login-left {
+    flex: 1.2;
+    background: linear-gradient(135deg, #055346, #0a7a67);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Cercles animés en arrière-plan */
+.login-left::before,
+.login-left::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(221, 250, 99, 0.15);
+    animation: float 6s ease-in-out infinite;
+}
+
+.login-left::before {
+    width: 300px;
+    height: 300px;
+    top: -50px;
+    left: -50px;
+}
+
+.login-left::after {
+    width: 200px;
+    height: 200px;
+    bottom: -50px;
+    right: -50px;
+    animation-delay: 3s;
+}
+
+.login-left h1 { 
+    font-weight: 800; 
+    font-size: 3.5rem; 
+    z-index: 1; 
+    text-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.login-left h1 i { 
+    color: var(--accent); 
+    margin-left: 10px;
+}
+
+.login-left p {
+    z-index: 1;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* --- Partie Droite : Formulaire (Carte Flottante) --- */
+.login-right { 
+    flex: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: #f8faf9; 
+    position: relative;
+}
+
+.login-card { 
+    width: 100%; 
+    max-width: 420px; 
+    padding: 45px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(5, 83, 70, 0.08); /* Ombre teintée avec la couleur du brand */
+    border: 1px solid rgba(0,0,0,0.02);
+    
+    /* Animation d'entrée */
+    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* --- Éléments du formulaire --- */
+.login-card h3 {
+    color: var(--brand);
+    font-weight: 800;
+}
+
+/* Champs de saisie */
+.login-card .form-control {
+    border: 2px solid #e9ecef;
+    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.login-card .form-control:focus {
+    background: #fff;
+    border-color: var(--brand-2);
+    box-shadow: 0 0 0 4px rgba(10, 122, 103, 0.1);
+    transform: translateY(-2px); /* Léger soulèvement */
+}
+
+.login-card .form-label {
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* Bouton de connexion */
+.btn-brand { 
+    background: var(--brand); 
+    color: white; 
+    padding: 0.9rem; 
+    border-radius: 10px; 
+    font-weight: 700; 
+    font-size: 1.1rem;
+    width: 100%; 
+    border: none; 
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-brand:hover { 
+    background: var(--brand-2); 
+    color: white; 
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(10, 122, 103, 0.3);
+}
+
+.btn-brand:active {
+    transform: translateY(0);
+}
+
+/* --- Keyframes Animations --- */
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+    100% { transform: translateY(0px) scale(1); }
+}
+
+@media (max-width: 768px) { 
+    .login-left { display: none; } 
+    .login-right { background: linear-gradient(135deg, #055346, #0a7a67); }
+    .login-card { margin: 20px; padding: 30px; }
+}
+@media (max-width: 768px) { 
+    .login-left { display: none; } 
+}
