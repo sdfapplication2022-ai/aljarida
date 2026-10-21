@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(UrlGenerator $url): void
     {
-        // 1. Forcer HTTPS en production (pour Render)
+        // 1. Forcer HTTPS en production
         if (config('app.env') === 'production') {
             $url->forceScheme('https');
         }
@@ -31,19 +31,34 @@ class AppServiceProvider extends ServiceProvider
                 'api_secret' => env('CLOUDINARY_API_SECRET'),
             ],
             'url' => [
-                'secure' => true, // Force les URL en HTTPS
+                'secure' => true,
             ],
         ]);
 
-        // 3. Optimisation du menu
-        View::composer(['partials.header', 'partials.footer', 'partials.article-sidebar'], function ($view) {
-            $menuCategories = Cache::remember('menu_categories', 3600, function () {
+        // 3. Injection des catégories (Sécurisée et compatible avec $c->slug)
+        View::composer([
+            'pages.home',
+            'partials.header',
+            'partials.footer',
+            'partials.article-sidebar'
+        ], function ($view) {
+
+            // On stocke un tableau dans le cache
+            $categoriesArray = Cache::remember('menu_categories', 3600, function () {
                 return Category::query()
                     ->select('id', 'name', 'slug')
                     ->orderBy('name')
-                    ->get();
+                    ->get()
+                    ->toArray();
             });
-            $view->with('menuCategories', $menuCategories);
+
+            // On transforme chaque élément du tableau en objet (stdClass)
+            // pour que $c->slug fonctionne parfaitement dans vos vues Blade
+            $categoriesObjects = collect($categoriesArray)->map(function ($item) {
+                return (object) $item;
+            });
+
+            $view->with('menuCategories', $categoriesObjects);
         });
     }
 }
