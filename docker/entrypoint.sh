@@ -8,8 +8,6 @@ sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-avail
 
 cd /var/www/html
 php artisan config:clear
-php artisan migrate --force
-php artisan db:seed --force
 php artisan storage:link 2>/dev/null || true
 php artisan config:cache
 php artisan route:cache
