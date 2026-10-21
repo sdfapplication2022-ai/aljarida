@@ -1,4 +1,3 @@
-@php($footerCategories = \App\Models\Category::orderBy('id')->get())
 <div class="footer12-section-area">
   <div class="container">
     <div class="row">
@@ -33,7 +32,7 @@
         <div class="footer-content-area">
           <h3>الأقسام</h3>
           <ul>
-            @foreach ($footerCategories as $c)
+            @foreach ($menuCategories as $c)
               <li><a href="{{ route('category', $c->slug) }}">{{ $c->name }}</a></li>
             @endforeach
           </ul>
@@ -45,11 +44,11 @@
           <h3>اتصل بنا</h3>
           <div class="icons-area">
             <div class="icons"><i class="fa-solid fa-phone-volume"></i></div>
-           <div class="text"><a href="tel:+21690033504" dir="ltr">+216 90 033 504</a></div>
+            <div class="text"><a href="tel:+21690033504" dir="ltr">+216 90 033 504</a></div>
           </div>
           <div class="icons-area">
             <div class="icons"><i class="fa-solid fa-location-dot"></i></div>
-            <div class="text"><a href="#">  جندوبة , تونس</a></div>
+            <div class="text"><a href="#">جندوبة، تونس</a></div>
           </div>
           <div class="icons-area">
             <div class="icons"><i class="fa-solid fa-envelope"></i></div>

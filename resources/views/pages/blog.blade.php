@@ -7,10 +7,9 @@
     'crumbs' => ['المدونة' => null, $blog->title => null],
 ])
 
-@php($others = \App\Models\Blog::where('id', '!=', $blog->id)->latest('published_at')->take(8)->get())
 @php($blogImage = $blog->image_url ?? asset('assets/img/all-images/case-img18.png'))
 
-<!--===== BLOG SINGLE (modèle case-single) STARTS =======-->
+<!--===== BLOG SINGLE STARTS =======-->
 <div class="case-single-section-area">
     <div class="container">
         <div class="row">

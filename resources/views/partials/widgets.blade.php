@@ -1,4 +1,4 @@
-{{-- Sondage + météo + prière + change (colonne latérale). Données : $poll, $pollVote, $widgets --}}
+{{-- Sondage + météo + prière + change. Données : $poll, $pollVote, $widgets --}}
 @php
     $w = $widgets['weather'] ?? null;
     $p = $widgets['prayer'] ?? null;
@@ -12,7 +12,6 @@
     .np-muted a { color: inherit; text-decoration: underline; }
     .np-box h3 small { font-size: 13px; font-weight: 400; color: var(--np-muted, #6b7570); }
 
-    /* Sondage */
     .np-flash { background: #eef7dc; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; font-size: 14px; }
     .np-poll-q { font-weight: 700; line-height: 1.7; margin-bottom: 14px; }
     .np-opt { display: flex; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 8px; border: 1.5px solid #dfe6e2; border-radius: 10px; cursor: pointer; transition: border-color .15s, background .15s; }
@@ -29,13 +28,11 @@
     .np-res.is-mine .np-bar span { background: var(--np-accent, #7ac70c); }
     .np-res.is-mine .np-res-line span::after { content: " ✓"; color: #5aa000; }
 
-    /* Météo */
     .np-w-main { display: flex; align-items: center; gap: 16px; margin: 6px 0 10px; }
     .np-w-main > i { font-size: 44px; color: #f0a500; }
     .np-w-temp { font-size: 40px; font-weight: 800; line-height: 1; color: var(--np-ink, #14301f); }
     .np-w-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 14px; }
 
-    /* Prière */
     .np-times { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .np-times li { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 8px; background: #f4f7f5; font-size: 13px; }
     .np-times li strong { font-size: 15px; }
@@ -43,7 +40,6 @@
     .np-times li.is-next strong { color: var(--np-lime, #e0ff4f); }
     .np-next { margin-top: 12px; font-size: 14px; }
 
-    /* Change */
     .np-rates { list-style: none; margin: 8px 0 12px; padding: 0; }
     .np-rates li { display: flex; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid #eef1ef; font-size: 14px; }
     .np-rates li:last-child { border-bottom: 0; }
@@ -55,9 +51,11 @@
 <script>
 (function () {
     var box = document.querySelector('[data-next-prayer]');
-    if (!box) return;
+    if (!box || !box.getAttribute('data-at')) return;
     var at = new Date(box.getAttribute('data-at')).getTime();
+    if (isNaN(at)) return;
     var out = box.querySelector('.np-countdown');
+    if (!out) return;
     function tick() {
         var d = at - Date.now();
         if (d <= 0) { out.textContent = 'حان الآن'; return; }
@@ -98,7 +96,6 @@
           <label class="np-opt"><input type="radio" name="option_id" value="{{ $o->id }}" required> <span>{{ $o->label }}</span></label>
         @endforeach
         @error('option_id')<div class="np-err">{{ $message }}</div>@enderror
-        @error('website')<div class="np-err">{{ $message }}</div>@enderror
         <button type="submit" class="np-vote-btn">صوّت</button>
       </form>
     @endif
@@ -110,38 +107,38 @@
   <div class="np-box">
     <h3>الطقس في تونس</h3>
     <div class="np-w-main">
-      <i class="fa-solid {{ $w['icon'] }}"></i>
+      <i class="fa-solid {{ $w['icon'] ?? 'fa-cloud-sun' }}"></i>
       <div>
-        <div class="np-w-temp" dir="ltr">{{ $w['temp'] }}°</div>
-        <div>{{ $w['label'] }}</div>
+        <div class="np-w-temp" dir="ltr">{{ $w['temp'] ?? '—' }}°</div>
+        <div>{{ $w['label'] ?? '' }}</div>
       </div>
     </div>
     <div class="np-w-meta">
-      <span>العظمى: <b dir="ltr">{{ $w['max'] }}°</b></span>
-      <span>الصغرى: <b dir="ltr">{{ $w['min'] }}°</b></span>
-      <span>الرطوبة: <b>{{ $w['humidity'] }}%</b></span>
-      <span>الرياح: <b>{{ $w['wind'] }}</b> كم/س</span>
+      <span>العظمى: <b dir="ltr">{{ $w['max'] ?? '—' }}°</b></span>
+      <span>الصغرى: <b dir="ltr">{{ $w['min'] ?? '—' }}°</b></span>
+      <span>الرطوبة: <b>{{ $w['humidity'] ?? '—' }}%</b></span>
+      <span>الرياح: <b>{{ $w['wind'] ?? '—' }}</b> كم/س</span>
     </div>
     <div class="np-muted" style="margin-top:10px"><a href="https://open-meteo.com/" target="_blank" rel="noopener">Weather data by Open-Meteo.com</a></div>
   </div>
 @endif
 
 {{-- ===== مواقيت الصلاة ===== --}}
-@if ($p)
+@if ($p && ! empty($p['times']) && ! empty($p['next']['at']))
   <div class="np-box" data-next-prayer data-at="{{ $p['next']['at'] }}">
     <h3>مواقيت الصلاة <small>· تونس</small></h3>
-    @if ($p['hijri'])<div class="np-muted">{{ $p['hijri'] }}</div>@endif
+    @if (! empty($p['hijri']))<div class="np-muted">{{ $p['hijri'] }}</div>@endif
     <ul class="np-times">
       @foreach ($p['times'] as $k => $t)
-        <li class="@if ($k === $p['next']['key']) is-next @endif"><span>{{ $p['labels'][$k] }}</span><strong dir="ltr">{{ $t }}</strong></li>
+        <li class="@if ($k === ($p['next']['key'] ?? '')) is-next @endif"><span>{{ $p['labels'][$k] ?? $k }}</span><strong dir="ltr">{{ $t }}</strong></li>
       @endforeach
     </ul>
-    <div class="np-next">الصلاة القادمة: <b>{{ $p['labels'][$p['next']['key']] }}</b> بعد <span class="np-countdown">…</span></div>
+    <div class="np-next">الصلاة القادمة: <b>{{ $p['labels'][$p['next']['key']] ?? '' }}</b> بعد <span class="np-countdown">…</span></div>
   </div>
 @endif
 
 {{-- ===== أسعار الصرف ===== --}}
-@if ($r)
+@if ($r && ! empty($r['rows']))
   <div class="np-box">
     <h3>الدينار التونسي</h3>
     <ul class="np-rates">
@@ -149,6 +146,6 @@
         <li><span>1 {{ $row['name'] }} <small>({{ $row['code'] }})</small></span><strong>{{ number_format($row['value'], 3) }} د.ت</strong></li>
       @endforeach
     </ul>
-    <span class="np-muted">أسعار مرجعية بتاريخ {{ $r['updated'] }}، وقد تختلف عن أسعار البنوك. <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></span>
+    <span class="np-muted">أسعار مرجعية بتاريخ {{ $r['updated'] ?? '' }}، وقد تختلف عن أسعار البنوك. <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a></span>
   </div>
 @endif

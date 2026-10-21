@@ -31798,3 +31798,493 @@ Location:
   .about-images-area .img1{height:280px}
   .team12-boxarea .img1{height:300px}
 }
+/* =========================================
+   CORRECTION DU LAYOUT DU HEADER (ALJARIDA)
+   ========================================= */
+
+/* Conteneur Flexbox pour Recherche + Bouton */
+.header-elements {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Groupe Actions (Recherche + Bouton) */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Barre de recherche dans le Header Desktop */
+.header-search {
+    width: 280px;
+}
+
+.header-search-form {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    margin: 0;
+}
+
+.header-search-form .form-control {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid #e3e8e5;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f7faf8;
+    color: #14301f;
+    transition: all 0.3s ease;
+}
+
+.header-search-form .form-control:focus {
+    border-color: #7ac70c;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(122, 199, 12, 0.15);
+}
+
+/* Bouton Recherche (Corrige le bouton carré dans l'image) */
+.header-search-form .search-submit-btn {
+    height: 48px;
+    width: 48px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 8px; /* Espacement en RTL */
+    border-radius: 8px;
+    border: none;
+    background: #14301f; /* Assorti au thème */
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.header-search-form .search-submit-btn:hover {
+    background: #7ac70c;
+    color: #14301f;
+}
+
+.header-search-form .search-submit-btn::after {
+    display: none; /* Enlève l'animation de fond du thème sur ce bouton */
+}
+
+/* Correction de la taille du bouton S'abonner dans le header */
+.header-actions .header-btn20 {
+    height: 48px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+}
+
+/* Recherche dans le menu mobile */
+.mobile-search-wrapper {
+    padding: 16px 0;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+.mobile-search-wrapper .header-search-form .form-control {
+    background: #fff;
+}
+
+/* Ajustement des liens du menu */
+.main-menu ul {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.main-menu ul li a {
+    padding: 0 10px;
+}
+/* =======================================================
+   CORRECTION FINALE DU HEADER (Anti-retour à la ligne)
+   ======================================================= */
+
+/* 1. Empêcher les textes de passer à la ligne (Boutons et Menu) */
+.main-menu ul li a,
+.header-actions .header-btn20,
+.header-search-form .search-submit-btn,
+.mobile-nav-list li a {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. Ajustement de la taille et de l'espace du bouton S'abonner */
+.header-actions .header-btn20 {
+    height: 46px;
+    padding: 0 20px;
+    font-size: 15px;
+    gap: 8px; /* Espace entre le texte et la flèche */
+}
+
+/* 3. Design de la barre de recherche (Input + Bouton unifiés) */
+.header-search {
+    width: 320px !important; /* Plus large pour respirer */
+}
+
+.header-search-form {
+    display: flex !important;
+    align-items: center;
+    background: #f4f6f5; /* Fond gris clair */
+    border: 1px solid #e3e8e5;
+    border-radius: 8px;
+    padding: 4px; /* Petit padding interne */
+    margin: 0 !important;
+    transition: all 0.3s ease;
+}
+
+.header-search-form:focus-within {
+    border-color: #7ac70c;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(122, 199, 12, 0.15);
+}
+
+.header-search-form .form-control {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    height: 38px !important;
+    font-size: 14px;
+    padding-right: 12px;
+}
+
+.header-search-form .search-submit-btn {
+    height: 38px !important;
+    width: 38px !important;
+    border-radius: 6px !important;
+    background: #14301f !important; /* Vert foncé */
+    color: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex-shrink: 0;
+}
+
+.header-search-form .search-submit-btn:hover {
+    background: #7ac70c !important;
+    color: #14301f !important;
+}
+
+/* 4. Ajustement du Menu pour qu'il ne soit pas écrasé */
+.main-menu ul {
+    gap: 5px !important;
+    flex-wrap: nowrap !important;
+}
+
+.main-menu ul li a {
+    font-size: 15px !important;
+    padding: 0 8px !important;
+}
+
+/* 5. Espacement global du Header */
+.header-elements {
+    gap: 15px !important;
+}
+/* =======================================================
+   MENU NAVIGATION PRO (Liens uniquement)
+   ======================================================= */
+
+/* 1. Conteneur des liens */
+.main-menu ul {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Espacement régulier entre les mots */
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 2. Style de chaque lien */
+.main-menu ul li a {
+    position: relative;
+    display: inline-block;
+    font-family: var(--ztc-family-font1);
+    font-size: 16px;
+    font-weight: 600;
+    color: #055346; /* Vert foncé de votre charte */
+    text-decoration: none;
+    padding: 8px 14px;
+    white-space: nowrap; /* EMPÊCHE "اتصل بنا" de passer à la ligne */
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+/* 3. Effet de survol (Hover) */
+.main-menu ul li a:hover {
+    color: #7ac70c; /* Vert clair au survol */
+    background: rgba(122, 199, 12, 0.08); /* Léger fond vert transparent */
+}
+
+/* 4. Lien Actif (La page en cours) */
+.main-menu ul li a.active {
+    color: #055346;
+    background: #DDFA63; /* Fond jaune/vert lime pour la page active */
+}
+
+/* 5. Optionnel : Un petit trait élégant sous le lien au survol */
+.main-menu ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    right: 14px;
+    left: 14px;
+    height: 2px;
+    background: #7ac70c;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.main-menu ul li a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* On retire le trait si c'est un fond plein (lien actif) */
+.main-menu ul li a.active::after {
+    display: none;
+}
+/* =======================================================
+   MENU PRO + DROPDOWN CATÉGORIES (à AJOUTER à la fin de votre CSS,
+   et à SUPPRIMER les anciens blocs "MENU NAVIGATION PRO" / "Ajustement du menu")
+   ======================================================= */
+
+/* ---------- Desktop ---------- */
+.main-menu > ul {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+}
+.main-menu > ul > li { position: relative; display: inline-block; }
+
+.main-menu > ul > li > a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #055346;
+  padding: 10px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all .25s ease;
+}
+.main-menu > ul > li > a:hover,
+.main-menu > ul > li.is-open > a,
+.main-menu > ul > li.has-dropdown:hover > a {
+  color: #055346;
+  background: rgba(122, 199, 12, .12);
+}
+.main-menu > ul > li > a.active {
+  background: #DDFA63;
+  color: #055346;
+}
+.main-menu > ul > li > a::after { display: none !important; }   /* retire l'ancien soulignement */
+
+/* Caret */
+.main-menu .has-dropdown > a i {
+  font-size: 11px;
+  transition: transform .25s ease;
+}
+.main-menu .has-dropdown:hover > a i,
+.main-menu .has-dropdown.is-open > a i { transform: rotate(180deg); }
+
+/* Panneau dropdown */
+.main-menu .nav-dropdown {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  min-width: 260px;
+  margin-top: 10px;
+  padding: 10px;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #edf1ef;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(5, 83, 70, .14);
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 2px !important;
+  z-index: 999;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s;
+}
+/* "pont" invisible pour ne pas perdre le hover entre le lien et le panneau */
+.main-menu .nav-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -12px; left: 0; right: 0;
+  height: 12px;
+}
+.main-menu .has-dropdown:hover > .nav-dropdown,
+.main-menu .has-dropdown.is-open > .nav-dropdown,
+.main-menu .has-dropdown:focus-within > .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+/* Beaucoup de catégories → 2 colonnes */
+.main-menu .nav-dropdown:has(li:nth-child(8)) {
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  min-width: 440px;
+}
+
+.main-menu .nav-dropdown li { display: block; }
+.main-menu .nav-dropdown li a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f3b33;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all .2s ease;
+}
+.main-menu .nav-dropdown li a::after { display: none !important; }
+.main-menu .nav-dropdown li a:hover {
+  background: rgba(122, 199, 12, .14);
+  color: #055346;
+  padding-inline-start: 20px;
+}
+.main-menu .nav-dropdown li a.current {
+  background: #055346;
+  color: #fff;
+}
+
+/* ---------- Mobile : accordéon ---------- */
+.m-accordion { list-style: none; margin: 0; padding: 0; }
+.m-accordion > li { border-bottom: 1px solid #eef1ef; }
+.m-accordion > li > a,
+.m-accordion .m-sub-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 4px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #055346;
+  background: none;
+  border: 0;
+  text-align: start;
+  cursor: pointer;
+}
+.m-accordion > li > a.active { color: #7ac70c; }
+.m-accordion .m-sub-toggle i { font-size: 13px; transition: transform .25s ease; }
+.m-accordion .m-has-sub.open > .m-sub-toggle i { transform: rotate(180deg); }
+
+.m-accordion .m-sub-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 12px 0 0;               /* léger retrait (RTL) */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease;
+}
+.m-accordion .m-has-sub.open > .m-sub-list {
+  max-height: 600px;
+  padding-bottom: 10px;
+}
+.m-accordion .m-sub-list li a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #3d544d;
+  border-right: 2px solid #e3e8e5;
+}
+.m-accordion .m-sub-list li a:hover,
+.m-accordion .m-sub-list li a.current {
+  color: #055346;
+  border-right-color: #7ac70c;
+  background: rgba(122, 199, 12, .08);
+}
+/* ===== Dropdown : éléments plus grands ===== */
+.main-menu > ul > li > a {
+  font-size: 18px !important;
+  padding: 12px 18px !important;
+}
+
+.main-menu .nav-dropdown {
+  min-width: 300px !important;
+  padding: 12px !important;
+  margin-top: 12px !important;
+  border-radius: 14px !important;
+}
+
+.main-menu .nav-dropdown li a {
+  font-size: 19px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  padding: 14px 20px !important;
+  border-radius: 10px !important;
+}
+
+.main-menu .nav-dropdown li a:hover {
+  padding-inline-start: 26px !important;
+}
+
+/* Séparateur léger entre les éléments */
+.main-menu .nav-dropdown li + li a {
+  border-top: 1px solid #f1f4f2;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Mobile */
+.m-accordion > li > a,
+.m-accordion .m-sub-toggle { font-size: 19px !important; padding: 16px 6px !important; }
+.m-accordion .m-sub-list li a { font-size: 17px !important; padding: 12px 16px !important; }
+/* ===== Dropdown : 5 éléments par colonne ===== */
+.main-menu .nav-dropdown {
+  grid-template-rows: repeat(5, auto) !important;   /* 5 lignes max par colonne */
+  grid-auto-flow: column !important;                /* remplit colonne par colonne */
+  grid-template-columns: none !important;           /* annule l'ancien réglage 1 ou 2 colonnes */
+  grid-auto-columns: minmax(230px, 1fr) !important; /* largeur de chaque colonne */
+  min-width: 0 !important;
+  width: max-content;
+  column-gap: 8px !important;
+}
+
+/* Pas de trait de séparation en haut de chaque colonne */
+.main-menu .nav-dropdown li:nth-child(5n+1) a {
+  border-top: 0 !important;
+}
+/* ===== Catégorie active dans le dropdown ===== */
+.main-menu .nav-dropdown li a.current,
+.main-menu .nav-dropdown li a.current:hover {
+  background: #055346 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  opacity: 1 !important;
+}
+
+/* Le hover normal reste lisible */
+.main-menu .nav-dropdown li a:hover:not(.current) {
+  background: rgba(122, 199, 12, .14) !important;
+  color: #055346 !important;
+}
+/* ===== Texte blanc sur la catégorie active ===== */
+.header-area .main-menu ul.nav-dropdown li > a.current,
+.header-area .main-menu ul.nav-dropdown li > a.current:hover,
+.header-area .main-menu ul.nav-dropdown li:hover > a.current,
+.header-area .main-menu ul.nav-dropdown li > a.current:focus {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #055346 !important;
+}

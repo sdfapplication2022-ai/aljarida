@@ -19,8 +19,6 @@
     ])
 @endsection
 
-
-
 @section('content')
 @include('partials.news-styles')
 @php($lead = $featured->first())
@@ -63,7 +61,7 @@
             <p class="np-clamp2">{{ $lead->excerpt }}</p>
             <div class="np-meta">
               <span><i class="fa-regular fa-clock"></i>{{ $lead->time_ago }}</span>
-              <span><i class="fa-regular fa-user"></i>{{ $lead->user->name ?? 'التحرير' }}</span>
+              <span><i class="fa-regular fa-user"></i>{{ $lead->user?->name ?? 'التحرير' }}</span>
             </div>
           </div>
         </article>
@@ -89,7 +87,7 @@
       <div class="np-empty">لا توجد مقالات منشورة بعد.</div>
     @endif
 
-    {{-- ===== Bandeau de widgets : sondage, météo, prière, change ===== --}}
+    {{-- ===== Widgets ===== --}}
     @if (! empty($poll) || array_filter($widgets ?? []))
       <div class="np-widgets">
         @include('partials.widgets')
@@ -114,7 +112,7 @@
                 <p class="np-clamp2">{{ $a->excerpt }}</p>
                 <div class="np-meta">
                   <span><i class="fa-regular fa-clock"></i>{{ $a->time_ago }}</span>
-                  <span><i class="fa-regular fa-user"></i>{{ $a->user->name ?? 'التحرير' }}</span>
+                  <span><i class="fa-regular fa-user"></i>{{ $a->user?->name ?? 'التحرير' }}</span>
                 </div>
               </div>
             </article>
@@ -152,7 +150,7 @@
       </div>
     @endif
 
-    {{-- ===== Sections par rubrique (2 par ligne) ===== --}}
+    {{-- ===== Sections par rubrique ===== --}}
     @if ($sections->isNotEmpty())
       <div class="np-sections">
         @foreach ($sections as $cat)
@@ -165,13 +163,23 @@
             </div>
 
             <article class="np-card">
-              <span class="np-thumb" @if ($first->image_url) style="--bg:url('{{ $first->image_url }}')" @endif>
-                @if ($first->image_url)<img src="{{ $first->image_url }}" alt="" loading="lazy">@else<span class="np-noimg"></span>@endif
-              </span>
-              <div class="np-card-body">
+            <span class="np-thumb" @if ($first->image_url) style="--bg:url('{{ $first->image_url }}')" @endif>
+                @if ($first->image_url)
+                <img src="{{ $first->image_url }}" alt="" loading="lazy">
+                @elseif ($first->video_player_url)
+                {{-- Nouveau bloc pour la vidéo --}}
+                <span class="np-video-placeholder">
+                    <i class="fa-solid fa-play"></i>
+                    <span>فيديو</span>
+                </span>
+                @else
+                <span class="np-noimg"></span>
+                @endif
+            </span>
+            <div class="np-card-body">
                 <h3 class="np-title np-clamp3"><a href="{{ route('article', $first->slug) }}">{{ $first->title }}</a></h3>
                 <div class="np-meta"><span><i class="fa-regular fa-clock"></i>{{ $first->time_ago }}</span></div>
-              </div>
+            </div>
             </article>
 
             @foreach ($rest as $a)
@@ -192,7 +200,7 @@
   </div>
 </div>
 
-{{-- ================= Sections du site (conservées du modèle d'origine) ================= --}}
+{{-- ================= Sections du site ================= --}}
 
 @if ($about)
 <div class="abut12-section-area sp1">
@@ -350,7 +358,7 @@
         </div>
       </div>
       <div class="col-lg-7">
-        @include('partials.contact-form')
+        @include('partials.contact-form', ['services' => $services])
       </div>
     </div>
   </div>
@@ -372,7 +380,9 @@
       @foreach ($blogs as $b)
       <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-duration="800">
         <div class="blog12-boxarea">
-          <div class="img1"><img src="{{ $b->image_url ?? asset('assets/img/all-images/new-img/blog-img14-h11.png') }}" alt=""></div>
+          <div class="img1">
+            @include('partials.img', ['src' => $b->image_url, 'alt' => $b->title])
+          </div>
           <div class="content-area">
             <ul>
               <li><a href="#"><i class="fa-regular fa-calendar-days"></i> {{ optional($b->published_at)->format('Y/m/d') }}</a></li>

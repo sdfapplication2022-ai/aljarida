@@ -1,0 +1,60 @@
+# Blueprint Render : 1 site web (Docker) + 1 base PostgreSQL + 1 disque pour les images envoyées.
+# Région : frankfurt (la plus proche de la Tunisie). Web et base doivent être dans la même région.
+databases:
+  - name: aljarida-db
+    plan: basic-256mb          # "free" = test uniquement : la base expire après 30 jours
+    region: frankfurt
+    databaseName: aljarida
+    user: aljarida
+
+services:
+  - type: web
+    name: aljarida
+    runtime: docker
+    plan: starter              # "free" = site qui s'endort après 15 min ET sans disque (images perdues)
+    region: frankfurt
+    healthCheckPath: /robots.txt
+    autoDeploy: true
+    disk:                      # images / vidéos envoyées depuis l'admin (non disponible en "free")
+      name: aljarida-uploads
+      mountPath: /var/www/html/storage/app/public
+      sizeGB: 1
+    envVars:
+      - key: APP_NAME
+        value: AlJarida
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_TIMEZONE
+        value: Africa/Tunis
+      - key: APP_KEY            # à générer en local : php artisan key:generate --show
+        sync: false
+      - key: APP_URL            # ex. https://aljarida.onrender.com puis votre domaine
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        fromDatabase:
+          name: aljarida-db
+          property: connectionString
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: public
+      # Premier compte administrateur (créé seulement s'il n'existe aucun admin)
+      - key: ADMIN_NAME
+        value: Administrateur
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # E-mails (laissez "log" pour ne rien envoyer au début)
+      - key: MAIL_MAILER
+        value: log

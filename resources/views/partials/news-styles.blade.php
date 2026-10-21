@@ -128,6 +128,83 @@
     .np-thumb::before { content: ""; position: absolute; inset: -16px; z-index: -1; background: var(--bg, none) center / cover no-repeat; filter: blur(16px) brightness(.85); }
     .np-lead { isolation: isolate; }
     .np-lead::after { content: ""; position: absolute; inset: -30px; z-index: -1; background: var(--bg, none) center / cover no-repeat; filter: blur(24px) brightness(.75); }
+    .np-latest-comments { list-style: none; margin: 0; padding: 0; }
+    .np-latest-comments li { padding: 12px 0; border-bottom: 1px solid #eef1ef; }
+    .np-latest-comments li:last-child { border-bottom: 0; }
+    .np-latest-comments p { margin: 0 0 6px; font-size: 14px; line-height: 1.7; color: var(--np-ink); }
+    .np-latest-comments .np-meta { font-size: 12px; }
+    .np-comment-link { display: inline-block; margin-top: 6px; font-size: 12px; color: var(--np-accent); text-decoration: none; }
+    .np-comment-link:hover { text-decoration: underline; }
+    .np-tags a small { opacity: .65; font-size: 12px; }
+    /* =======================================================
+   PLACEHOLDER VIDÉO (Remplace le fond vert)
+   ======================================================= */
+
+.np-video-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 100px; /* Assure une hauteur minimum */
+    /* Dégradé sombre élégant */
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: #fff;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet de halo derrière le bouton Play */
+.np-video-placeholder::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(122, 199, 12, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Le bouton Play */
+.np-video-placeholder i {
+    position: relative;
+    z-index: 1;
+    font-size: 32px;
+    color: #e0ff4f; /* Vert lime de la charte */
+    background: rgba(255, 255, 255, 0.1);
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid rgba(224, 255, 79, 0.3);
+    padding-right: 4px; /* Centre parfaitement l'icône Play */
+    transition: all 0.3s ease;
+}
+
+/* Le texte "فيديو" */
+.np-video-placeholder span:not(.fa-play) {
+    position: relative;
+    z-index: 1;
+    font-family: var(--ztc-family-font1);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #e0ff4f;
+}
+
+/* Animation au survol de la carte */
+.np-thumb:hover .np-video-placeholder i {
+    transform: scale(1.1);
+    background: rgba(224, 255, 79, 0.2);
+    border-color: #e0ff4f;
+}
 </style>
 @endpush
 @endonce

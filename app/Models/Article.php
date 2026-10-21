@@ -106,22 +106,22 @@ class Article extends Model
     public function tags()     { return $this->belongsToMany(Tag::class); }
     public function likes()    { return $this->hasMany(ArticleLike::class); }
 
-    public function getEstimatedReadingTimeAttribute(): int
-    {
-        return max(1, (int) ceil(str_word_count(strip_tags($this->content)) / 200));
-    }
+public function getEstimatedReadingTimeAttribute(): int
+{
+    $text  = strip_tags((string) $this->content);
+    $words = preg_match_all('/\p{L}+/u', $text, $m) ?: 0;
+    return max(1, (int) ceil($words / 200));
+}
 
-    /** Extrait texte court pour les cartes. */
-    public function getExcerptAttribute(): string
-    {
-        // ✅ Priorité à l'extrait saisi manuellement dans le formulaire
-        if (! empty($this->attributes['excerpt'])) {
-            return (string) $this->attributes['excerpt'];
-        }
-        // Sinon : auto-généré depuis le contenu
-        $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
+public function getExcerptAttribute(): string
+{
+    $manual = trim((string) ($this->attributes['excerpt'] ?? ''));
+    if ($manual !== '') {
+        return $manual;
     }
+    $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
+}
 
     /** « منذ ساعتين » */
     public function getTimeAgoAttribute(): string

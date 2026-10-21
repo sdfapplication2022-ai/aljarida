@@ -98,64 +98,6 @@ class SiteController extends Controller
         return view('pages.category', compact('category', 'articles'));
     }
 
-    public function article(Request $request, string $slug)
-    {
-        $article = Article::published()->with(['category', 'user', 'tags'])->withCount('likes')
-            ->where('slug', $slug)->firstOrFail();
-        $article->increment('views');
-
-        $user  = $request->user();
-        $token = Visitor::existing($request);
-
-        // Commentaires approuvés + ceux du visiteur lui-même (même en attente de modération)
-        $comments = $article->comments()
-            ->where(function ($q) use ($token, $user) {
-                $q->where('is_approved', true);
-                if ($token) { $q->orWhere('visitor_token', $token); }
-                if ($user)  { $q->orWhere('user_id', $user->id); }
-            })
-            ->with('user')->latest()->get();
-
-        // Ce visiteur a-t-il déjà aimé cet article ?
-        $liked = ($user || $token) && ArticleLike::where('article_id', $article->id)
-            ->where($user ? ['user_id' => $user->id] : ['visitor_token' => $token])
-            ->exists();
-
-        // Pré-remplit nom / e-mail avec ceux de son dernier commentaire
-        $guest = (! $user && $token)
-            ? Comment::where('visitor_token', $token)->whereNotNull('guest_name')->latest()->first(['guest_name', 'guest_email'])
-            : null;
-
-        // Articles similaires : même rubrique OU tags en commun, ceux qui partagent le plus de tags d'abord
-        $tagIds = $article->tags->pluck('id')->all();
-        $related = Article::published()->where('id', '!=', $article->id)
-            ->where(function ($q) use ($article, $tagIds) {
-                $q->where('category_id', $article->category_id);
-                if ($tagIds) {
-                    $q->orWhereHas('tags', fn ($t) => $t->whereIn('tags.id', $tagIds));
-                }
-            })
-            ->withCount(['tags as shared_tags' => fn ($t) => $t->whereIn('tags.id', $tagIds ?: [0])])
-            ->orderByDesc('shared_tags')->latest('published_at')->take(3)->get();
-
-        // Article précédent / suivant (ordre de création)
-        $older = Article::published()->where('id', '<', $article->id)->orderByDesc('id')->first(['id', 'title', 'slug']);
-        $newer = Article::published()->where('id', '>', $article->id)->orderBy('id')->first(['id', 'title', 'slug']);
-
-        $mostRead = Article::published()->with('category')
-            ->where('id', '!=', $article->id)->orderByDesc('views')->take(5)->get();
-
-        return view('pages.article', [
-            'article' => $article, 'comments' => $comments, 'related' => $related,
-            'liked' => $liked, 'guest' => $guest, 'visitorToken' => $token,
-        ] + $this->widgetsData($request) + compact('mostRead', 'older', 'newer'));
-    }
-
-    public function blog(int $id)
-    {
-        return view('pages.blog', ['blog' => Blog::findOrFail($id)]);
-    }
-
     public function search(Request $request)
     {
         $q = Str::limit(trim((string) $request->query('q', '')), 100, '');
@@ -196,6 +138,101 @@ class SiteController extends Controller
 
         return view('pages.tag', compact('tag', 'articles'));
     }
+public function article(Request $request, string $slug)
+{
+    $article = Article::published()->with(['category', 'user', 'tags'])->withCount('likes')
+        ->where('slug', $slug)->firstOrFail();
+    $article->increment('views');
+
+    $user  = $request->user();
+    $token = Visitor::existing($request);
+
+    $comments = $article->comments()
+        ->where(function ($q) use ($token, $user) {
+            $q->where('is_approved', true);
+            if ($token) { $q->orWhere('visitor_token', $token); }
+            if ($user)  { $q->orWhere('user_id', $user->id); }
+        })
+        ->with('user')->latest()->get();
+
+    $liked = ($user || $token) && ArticleLike::where('article_id', $article->id)
+        ->where($user ? ['user_id' => $user->id] : ['visitor_token' => $token])
+        ->exists();
+
+    $guest = (! $user && $token)
+        ? Comment::where('visitor_token', $token)->whereNotNull('guest_name')->latest()->first(['guest_name', 'guest_email'])
+        : null;
+
+    $tagIds = $article->tags->pluck('id')->all();
+    $related = Article::published()->where('id', '!=', $article->id)
+        ->where(function ($q) use ($article, $tagIds) {
+            $q->where('category_id', $article->category_id);
+            if ($tagIds) {
+                $q->orWhereHas('tags', fn ($t) => $t->whereIn('tags.id', $tagIds));
+            }
+        })
+        ->withCount(['tags as shared_tags' => fn ($t) => $t->whereIn('tags.id', $tagIds ?: [0])])
+        ->orderByDesc('shared_tags')->latest('published_at')->take(3)->get();
+
+    $older = Article::published()->where('id', '<', $article->id)->orderByDesc('id')->first(['id', 'title', 'slug']);
+    $newer = Article::published()->where('id', '>', $article->id)->orderBy('id')->first(['id', 'title', 'slug']);
+
+    $mostRead = Article::published()->with('category')
+        ->where('id', '!=', $article->id)->orderByDesc('views')->take(5)->get();
+
+    // Nouveaux widgets de la sidebar
+    $latestComments = Comment::where('is_approved', true)
+        ->whereNotNull('article_id')
+        ->with(['user:id,name', 'article:id,slug,title'])
+        ->latest()
+        ->take(5)
+        ->get(['id','content','user_id','guest_name','article_id','created_at']);
+
+    $popularTags = \App\Models\Tag::withCount('articles')
+        ->having('articles_count', '>', 0)
+        ->orderByDesc('articles_count')
+        ->take(15)
+        ->get(['id','name','slug']);
+
+    return view('pages.article', [
+        'article' => $article, 'comments' => $comments, 'related' => $related,
+        'liked' => $liked, 'guest' => $guest, 'visitorToken' => $token,
+        'latestComments' => $latestComments, 'popularTags' => $popularTags,
+    ] + $this->widgetsData($request) + compact('mostRead', 'older', 'newer'));
+}
+
+public function blog(int $id)
+{
+    $blog = Blog::published()->findOrFail($id);
+    return view('pages.blog', [
+        'blog'   => $blog,
+        'others' => Blog::published()->where('id', '!=', $blog->id)
+                        ->latest('published_at')->take(8)->get(),
+    ]);
+}
+
+public function like(Request $request, Article $article)
+{
+    abort_unless($article->is_published, 404);
+
+    $user = $request->user();
+    $who  = $user ? ['user_id' => $user->id] : ['visitor_token' => Visitor::token($request)];
+
+    $existing = ArticleLike::where('article_id', $article->id)->where($who)->first();
+    if ($existing) {
+        $existing->delete();
+        $liked = false;
+    } else {
+        ArticleLike::firstOrCreate(['article_id' => $article->id] + $who, ['ip' => $request->ip()]);
+        $liked = true;
+    }
+
+    if ($request->wantsJson()) {
+        return response()->json(['liked' => $liked, 'count' => $article->likes()->count()]);
+    }
+    return back();
+}
+
 
     public function author(User $user)
     {
@@ -250,25 +287,11 @@ class SiteController extends Controller
             ->with('success', 'تم حذف تعليقك.');
     }
 
-    /** Bascule : un clic aime, un second clic retire le like. */
-    public function like(Request $request, Article $article)
+
+    public function contactPage()
     {
-        $user = $request->user();
-        $who  = $user ? ['user_id' => $user->id] : ['visitor_token' => Visitor::token($request)];
-
-        $existing = ArticleLike::where('article_id', $article->id)->where($who)->first();
-
-        if ($existing) {
-            $existing->delete();
-        } else {
-            ArticleLike::firstOrCreate(['article_id' => $article->id] + $who, ['ip' => $request->ip()]);
-        }
-
-        return back();
+        return view('pages.contact', ['services' => \App\Models\Service::all()]);
     }
-
-    public function contactPage() { return view('pages.contact'); }
-
     public function contact(Request $request)
     {
         $msg = ContactMessage::create($request->validate([

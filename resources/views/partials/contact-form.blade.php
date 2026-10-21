@@ -13,7 +13,7 @@
         <div class="input-area">
           <select name="service_type" class="country-area nice-select6">
             <option value="">نوع الخدمة</option>
-            @foreach (\App\Models\Service::pluck('title') as $t)
+            @foreach (($services ?? collect())->pluck('title') as $t)
               <option value="{{ $t }}" @selected(old('service_type') === $t)>{{ $t }}</option>
             @endforeach
           </select>

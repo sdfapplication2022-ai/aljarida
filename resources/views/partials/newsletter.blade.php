@@ -8,6 +8,9 @@
                     <div class="space32"></div>
                     <form action="{{ route('subscribe.store') }}" method="POST">
                         @csrf
+                        <div style="position:absolute;left:-9999px" aria-hidden="true">
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <input type="email" name="email" placeholder="بريدك الإلكتروني" required>
                         <button type="submit" class="header-btn20">اشترك <i class="fa-solid fa-angle-left"></i></button>
                     </form>
@@ -17,7 +20,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="cta-box">
                     <div class="icon"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/phone5.svg" alt=""></div>
-                    <div class="text"><p>اتصل بنا 24/7</p><div class="space14"></div><a  dir="ltr" href="tel:+21690033504"> +216 90 033 504</a></div>
+                    <div class="text"><p>اتصل بنا 24/7</p><div class="space14"></div><a dir="ltr" href="tel:+21690033504"> +216 90 033 504</a></div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">

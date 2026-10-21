@@ -64,10 +64,11 @@
           <div class="space34"></div>
 
           @include('partials.article-tools')
+          @include('partials.article-toc')
 
           @if ($article->image_url)
             <a href="{{ $article->image_url }}" class="show-hero js-lightbox" title="{{ $article->title }}" style="--bg:url('{{ $article->image_url }}')">
-              <img src="{{ $article->image_url }}" alt="{{ $article->title }}">
+              <img src="{{ $article->image_url }}" alt="{{ $article->title }}" fetchpriority="high">
             </a>
             <div class="space24"></div>
           @endif
@@ -87,7 +88,7 @@
                 @forelse ($article->tags as $tag)
                   <li><a href="{{ route('tag', $tag->slug) }}" @if ($loop->last) class="m-0" @endif>{{ $tag->name }}</a></li>
                 @empty
-                  <li><a href="#" class="m-0">{{ $article->category->name ?? 'أخبار' }}</a></li>
+                  <li><a href="#" class="m-0">{{ $article->category?->name ?? 'أخبار' }}</a></li>
                 @endforelse
               </ul>
             </div>
@@ -103,15 +104,23 @@
           </div>
 
           <div class="space24"></div>
-          <form action="{{ route('article.like', $article) }}" method="POST">
+
+          <form action="{{ route('article.like', $article) }}" method="POST"
+                class="like-form" data-like>
             @csrf
-            <button class="header-btn20" type="submit"><i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart"></i> {{ $liked ? 'أعجبك هذا المقال' : 'أعجبني' }} ({{ $article->likes_count ?? $article->likes()->count() }})</button>
+            <button type="submit" class="header-btn20 like-btn"
+                    aria-pressed="{{ $liked ? 'true' : 'false' }}"
+                    aria-label="{{ $liked ? 'إلغاء الإعجاب' : 'أعجبني' }}">
+              <i class="{{ $liked ? 'fa-solid' : 'fa-regular' }} fa-heart like-icon" aria-hidden="true"></i>
+              <span class="like-label">{{ $liked ? 'أعجبك هذا المقال' : 'أعجبني' }}</span>
+              (<span class="like-count">{{ (int) $article->likes_count }}</span>)
+            </button>
           </form>
 
           @include('partials.post-nav')
 
           <div class="space50"></div>
-          <h3 id="comments">التعليقات ({{ $comments->where('is_approved', true)->count() }})</h3>
+          <h3 id="comments">التعليقات ({{ $comments->count() }})</h3>
           <div class="space32"></div>
 
           @include('partials.flash')
@@ -161,7 +170,6 @@
             <div class="space12"></div>
             <form action="{{ route('article.comment', $article) }}" method="POST">
               @csrf
-              {{-- honeypot : invisible pour les humains --}}
               <div style="position:absolute;left:-9999px" aria-hidden="true">
                 <input type="text" name="website" tabindex="-1" autocomplete="off">
               </div>
@@ -184,7 +192,7 @@
                 <div class="col-lg-12">
                   <div class="input-area"><textarea name="content" placeholder="اكتب تعليقك..." required>{{ old('content') }}</textarea></div>
                   @error('content')<small class="text-danger">{{ $message }}</small>@enderror
-                  @error('website')<small class="text-danger">{{ $message }}</small>@enderror
+                  {{-- honeypot : jamais affiché, jamais annoncé --}}
                 </div>
                 <div class="col-lg-12">
                   <div class="space24"></div>
@@ -227,3 +235,46 @@
 @include('partials.lightbox')
 @include('partials.newsletter')
 @endsection
+
+@once
+@push('scripts')
+<script>
+(function () {
+    document.querySelectorAll('[data-like]').forEach(function (form) {
+        async function onSubmit(e) {
+            if (!window.fetch) return;
+            e.preventDefault();
+            var btn = form.querySelector('.like-btn');
+            if (btn.disabled) return;
+            btn.disabled = true;
+            try {
+                var res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': form.querySelector('input[name=_token]').value,
+                        'Accept': 'application/json',
+                    },
+                    body: new FormData(form),
+                });
+                if (!res.ok) throw new Error();
+                var data = await res.json();
+                btn.querySelector('.like-icon').className =
+                    (data.liked ? 'fa-solid' : 'fa-regular') + ' fa-heart like-icon';
+                btn.querySelector('.like-label').textContent =
+                    data.liked ? 'أعجبك هذا المقال' : 'أعجبني';
+                btn.querySelector('.like-count').textContent = data.count;
+                btn.setAttribute('aria-pressed', data.liked ? 'true' : 'false');
+                btn.setAttribute('aria-label', data.liked ? 'إلغاء الإعجاب' : 'أعجبني');
+            } catch (_) {
+                form.removeEventListener('submit', onSubmit);
+                form.submit();
+            } finally {
+                btn.disabled = false;
+            }
+        }
+        form.addEventListener('submit', onSubmit);
+    });
+})();
+</script>
+@endpush
+@endonce
