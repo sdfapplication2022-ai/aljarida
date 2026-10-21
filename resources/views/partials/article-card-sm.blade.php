@@ -11,13 +11,13 @@
         <ul>
           <li>
             <a href="#">
-              <img src="https://seoc-html-v2.vercel.app/assets/img/icons/contact1.svg" alt="">
+              <img src="{{ asset('assets/img/icons/contact1.svg') }}" alt="">
               {{ $a->user?->name ?? 'التحرير' }}
             </a>
           </li>
           <li>
             <a href="#">
-              <img src="https://seoc-html-v2.vercel.app/assets/img/icons/calender1.svg" alt="">
+              <img src="{{ asset('assets/img/icons/calender1.svg') }}" alt="">
               {{ optional($a->published_at)->format('Y/m/d') }}
             </a>
           </li>

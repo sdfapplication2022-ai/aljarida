@@ -1,4 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
+    /* ====== RÉGLAGES DES TAILLES : modifiez ces 4 valeurs ====== */
+    :root {
+        --show-hero-height: 460px;      /* hauteur de l'image principale (desktop) */
+        --show-hero-height-sm: 240px;   /* hauteur de l'image principale (mobile) */
+        --body-img-max-width: 760px;    /* largeur max des images dans le texte */
+        --body-img-max-height: 520px;   /* hauteur max des images dans le texte */
+    }
+
 a, a:hover {
   text-decoration: none;
 }
@@ -32288,3 +32296,86 @@ Location:
 .mobile-sidebar.mobile-sidebar12 span.submenu-button {
   display: none !important;
 }
+    .sub-card {
+        max-width: 560px; margin: 0 auto; padding: 40px 32px; text-align: center;
+        background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(20, 48, 31, .08);
+    }
+    .sub-card .sub-icon {
+        width: 64px; height: 64px; margin: 0 auto 16px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        background: #e9f7d2; color: #14301f; font-size: 26px;
+    }
+    .sub-card h3 { margin-bottom: 8px; }
+    .sub-card p  { margin-bottom: 24px; }
+    .sub-form { display: flex; flex-wrap: wrap; gap: 10px; }
+    .sub-input {
+        flex: 1 1 240px; height: 54px; padding: 0 18px; font-size: 16px; color: #14301f;
+        background: #fff; border: 1.5px solid #cfd8d3; border-radius: 10px; outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .sub-input::placeholder { color: #8a948f; }
+    .sub-input:focus { border-color: #7ac70c; box-shadow: 0 0 0 4px rgba(122, 199, 12, .18); }
+    .sub-input.is-invalid { border-color: #dc3545; }
+    .sub-form .header-btn20 { height: 54px; border: 0; cursor: pointer; }
+    .sub-error { margin-top: 10px; color: #dc3545; font-size: 14px; }
+    .sub-note  { display: block; margin-top: 18px; color: #6b7570; }
+    .toc { margin: 0 0 20px; padding: 12px 16px; background: #fff; border: 1px solid #e3e8e5; border-radius: 12px; }
+    .toc summary { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #14301f; list-style: none; }
+    .toc summary::-webkit-details-marker { display: none; }
+    .toc summary::after { content: "\f107"; font-family: "Font Awesome 6 Free", sans-serif; font-weight: 900; margin-right: auto; transition: transform .2s; }
+    .toc[open] summary::after { transform: rotate(180deg); }
+    .toc ol { list-style: none; margin: 12px 0 0; padding: 0; counter-reset: toc; }
+    .toc li { counter-increment: toc; padding: 6px 0; border-top: 1px solid #f0f3f1; }
+    .toc li::before { content: counter(toc) ". "; color: #7ac70c; font-weight: 700; }
+    .toc a { color: #14301f; text-decoration: none; }
+    .toc a:hover, .toc a.is-active { color: #5aa000; }
+    .toc li.toc-l2 { padding-right: 22px; font-size: 14px; }
+    @media (max-width: 767px) { .toc ol { max-height: 40vh; overflow-y: auto; } }
+    .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 100050; pointer-events: none; }
+    .read-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7ac70c, #e0ff4f); transition: width .1s linear; }
+
+    .read-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 10px 12px; background: #fff; border: 1px solid #e3e8e5; border-radius: 12px; }
+    .read-tools button { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 1px solid #dfe6e2; border-radius: 999px; background: #f7faf8; color: #14301f; font-size: 14px; cursor: pointer; transition: background .15s, color .15s; }
+    .read-tools button:hover, .read-tools button[aria-pressed="true"] { background: #14301f; color: #fff; border-color: #14301f; }
+    .read-tools [hidden] { display: none; }
+    @media (max-width: 575px) { .read-tools .lbl { display: none; } }
+
+    /* le réglage de taille agit aussi sur les paragraphes du thème */
+    .article-body p, .article-body li, .article-body blockquote { font-size: inherit !important; line-height: 1.95; }
+
+    /* Image principale (article / blog) */
+    .show-hero { position: relative; isolation: isolate; display: block; overflow: hidden; border-radius: 12px; cursor: zoom-in; }
+    .show-hero::before { content: ""; position: absolute; inset: -20px; z-index: -1; background: var(--bg, none) center / cover no-repeat; filter: blur(20px) brightness(.8); }
+    .show-hero img {
+        display: block; width: 100%; height: var(--show-hero-height);
+        object-fit: contain; transition: transform .4s ease;
+    }
+    .show-hero:hover img { transform: scale(1.03); }
+    @media (max-width: 767px) { .show-hero img { height: var(--show-hero-height-sm); } }
+
+    /* Images à l'intérieur du contenu (éditeur Jodit) */
+    .article-body img {
+        display: block; margin: 1.5rem auto; border-radius: 8px; cursor: zoom-in;
+        width: auto !important; height: auto !important;
+        max-width: min(100%, var(--body-img-max-width)) !important;
+        max-height: var(--body-img-max-height);
+        object-fit: contain;
+    }
+    .article-body a.js-lightbox { display: block; }
+
+    /* La lightbox doit passer au-dessus du header sticky du thème */
+    .mfp-bg { z-index: 100042; }
+    .mfp-wrap { z-index: 100043; }
+    .avatar-initial {
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        width: 70px; height: 70px; border-radius: 50%;
+        color: #fff; font-size: 28px; font-weight: 700; line-height: 1;
+    }
+        .post-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 36px 0 8px; }
+    .post-nav-item { display: block; padding: 16px 18px; background: #fff; border: 1px solid #e3e8e5; border-radius: 12px; text-decoration: none; color: #14301f; transition: border-color .15s, transform .15s; }
+    .post-nav-item:hover { border-color: #7ac70c; transform: translateY(-2px); }
+    .post-nav-item small { display: block; margin-bottom: 6px; color: #6b7570; font-size: 13px; }
+    .post-nav-item strong { display: block; font-size: 15px; line-height: 1.7; }
+    .post-nav-next { text-align: left; }
+    @media (max-width: 575px) { .post-nav { grid-template-columns: 1fr; } .post-nav-next { text-align: right; } }
+

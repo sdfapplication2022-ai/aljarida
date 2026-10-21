@@ -18,13 +18,27 @@ class SiteController extends Controller
         $data = (function () {
             $base = fn () => Article::published()->with(['category', 'user']);
 
-            // À la une : articles marqués "à la une", complétés par les plus récents
-            $featured = $base()->where('is_featured', true)->latest('published_at')->take(5)->get();
+            // À la une : le DERNIER article en grand, puis les articles "مميز", puis les plus récents
+            $newest = $base()->orderByRaw('COALESCE(published_at, created_at) desc')->first();
+
+            $featured = collect($newest ? [$newest] : []);
+
+            $featured = $featured->concat(
+                $base()->where('is_featured', true)
+                    ->when($newest, fn ($q) => $q->where('id', '!=', $newest->id))
+                    ->orderByRaw('COALESCE(published_at, created_at) desc')
+                    ->take(4)->get()
+            );
+
             if ($featured->count() < 5) {
-                $fill = $base()->whereNotIn('id', $featured->pluck('id'))
-                    ->latest('published_at')->take(5 - $featured->count())->get();
-                $featured = $featured->concat($fill)->values();
+                $featured = $featured->concat(
+                    $base()->whereNotIn('id', $featured->pluck('id'))
+                        ->orderByRaw('COALESCE(published_at, created_at) desc')
+                        ->take(5 - $featured->count())->get()
+                );
             }
+
+            $featured = $featured->values();
 
             // Bandeau « عاجل »
             $breaking = Article::published()->latest('published_at')

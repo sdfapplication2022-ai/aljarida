@@ -10,21 +10,6 @@
 </div>
 
 @once
-@push('styles')
-<style>
-    .read-progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 100050; pointer-events: none; }
-    .read-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7ac70c, #e0ff4f); transition: width .1s linear; }
-
-    .read-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; padding: 10px 12px; background: #fff; border: 1px solid #e3e8e5; border-radius: 12px; }
-    .read-tools button { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border: 1px solid #dfe6e2; border-radius: 999px; background: #f7faf8; color: #14301f; font-size: 14px; cursor: pointer; transition: background .15s, color .15s; }
-    .read-tools button:hover, .read-tools button[aria-pressed="true"] { background: #14301f; color: #fff; border-color: #14301f; }
-    .read-tools [hidden] { display: none; }
-    @media (max-width: 575px) { .read-tools .lbl { display: none; } }
-
-    /* le réglage de taille agit aussi sur les paragraphes du thème */
-    .article-body p, .article-body li, .article-body blockquote { font-size: inherit !important; line-height: 1.95; }
-</style>
-@endpush
 
 @push('scripts')
 <script>

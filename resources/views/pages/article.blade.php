@@ -13,16 +13,6 @@
     ])
 @endsection
 
-@push('styles')
-<style>
-    .avatar-initial {
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-        width: 70px; height: 70px; border-radius: 50%;
-        color: #fff; font-size: 28px; font-weight: 700; line-height: 1;
-    }
-</style>
-@endpush
-
 @section('content')
 @include('partials.news-styles')
 @include('partials.page-header', [
@@ -46,12 +36,12 @@
             <ul>
               <li>
                 @if ($article->user)
-                  <a href="{{ route('author', $article->user) }}"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/contact1.svg" alt="">{{ $article->user->name }}</a>
+                  <a href="{{ route('author', $article->user) }}"><img src="{{ asset('assets/img/icons/contact1.svg') }}" alt="">{{ $article->user->name }}</a>
                 @else
-                  <a href="#"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/contact1.svg" alt="">التحرير</a>
+                  <a href="#"><img src="{{ asset('assets/img/icons/contact1.svg') }}" alt="">التحرير</a>
                 @endif
               </li>
-              <li><a href="#"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/calender1.svg" alt="">{{ optional($article->published_at)->format('Y/m/d') }}</a></li>
+              <li><a href="#"><img src="{{ asset('assets/img/icons/calender1.svg') }}" alt="">{{ optional($article->published_at)->format('Y/m/d') }}</a></li>
               <li><a href="#"><i class="fa-regular fa-clock"></i> {{ $article->estimated_reading_time }} د</a></li>
               <li><a href="#"><i class="fa-regular fa-eye"></i> {{ $article->views }}</a></li>
               @if ($article->category)

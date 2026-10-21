@@ -56,9 +56,9 @@
           <div class="case-list">
               <ul>
                   @forelse ($others as $o)
-                      <li><img src="https://seoc-html-v2.vercel.app/assets/img/icons/check6.svg" alt=""><a href="{{ route('blog.show', $o->id) }}">{{ $o->title }}</a></li>
+                      <li><img src="{{ asset('assets/img/icons/check6.svg') }}" alt=""><a href="{{ route('blog.show', $o->id) }}">{{ $o->title }}</a></li>
                   @empty
-                      <li><img src="https://seoc-html-v2.vercel.app/assets/img/icons/check6.svg" alt="">لا توجد تدوينات أخرى بعد</li>
+                      <li><img src="{{ asset('assets/img/icons/check6.svg') }}" alt="">لا توجد تدوينات أخرى بعد</li>
                   @endforelse
               </ul>
           </div>

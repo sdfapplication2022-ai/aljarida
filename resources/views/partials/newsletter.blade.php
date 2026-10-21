@@ -19,14 +19,14 @@
             <div class="col-lg-1"></div>
             <div class="col-lg-3 col-md-6">
                 <div class="cta-box">
-                    <div class="icon"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/phone5.svg" alt=""></div>
+                    <div class="icon"><img src="{{ asset('assets/img/icons/phone5.svg') }}" alt=""></div>
                     <div class="text"><p>اتصل بنا 24/7</p><div class="space14"></div><a dir="ltr" href="tel:+21690033504"> +216 90 033 504</a></div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="space30 d-md-none d-block"></div>
                 <div class="cta-box">
-                    <div class="icon"><img src="https://seoc-html-v2.vercel.app/assets/img/icons/email5.svg" alt=""></div>
+                    <div class="icon"><img src="{{ asset('assets/img/icons/email5.svg') }}" alt=""></div>
                     <div class="text"><p>راسلنا في أي وقت</p><div class="space14"></div><a href="mailto:info@aljareeda.tn">info@aljareeda.tn</a></div>
                 </div>
             </div>

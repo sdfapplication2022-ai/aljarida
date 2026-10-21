@@ -5,22 +5,6 @@
 </details>
 
 @once
-@push('styles')
-<style>
-    .toc { margin: 0 0 20px; padding: 12px 16px; background: #fff; border: 1px solid #e3e8e5; border-radius: 12px; }
-    .toc summary { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #14301f; list-style: none; }
-    .toc summary::-webkit-details-marker { display: none; }
-    .toc summary::after { content: "\f107"; font-family: "Font Awesome 6 Free", sans-serif; font-weight: 900; margin-right: auto; transition: transform .2s; }
-    .toc[open] summary::after { transform: rotate(180deg); }
-    .toc ol { list-style: none; margin: 12px 0 0; padding: 0; counter-reset: toc; }
-    .toc li { counter-increment: toc; padding: 6px 0; border-top: 1px solid #f0f3f1; }
-    .toc li::before { content: counter(toc) ". "; color: #7ac70c; font-weight: 700; }
-    .toc a { color: #14301f; text-decoration: none; }
-    .toc a:hover, .toc a.is-active { color: #5aa000; }
-    .toc li.toc-l2 { padding-right: 22px; font-size: 14px; }
-    @media (max-width: 767px) { .toc ol { max-height: 40vh; overflow-y: auto; } }
-</style>
-@endpush
 
 @push('scripts')
 <script>
