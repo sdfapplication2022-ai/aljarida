@@ -24,16 +24,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // 2. Configuration de Cloudinary
-        Configuration::instance([
-            'cloud' => [
-                'cloud_name' => config('cloudinary.cloud_name'),
-                'api_key'    => config('cloudinary.api_key'),
-                'api_secret' => config('cloudinary.api_secret'),
-            ],
-            'url' => [
-                'secure' => true,
-            ],
-        ]);
+        if ($cloudinaryUrl = config('cloudinary.url')) {
+            Configuration::instance($cloudinaryUrl);
+        }
 
         // 3. Injection des catégories (Sécurisée et compatible avec $c->slug)
         View::composer([

@@ -13,28 +13,27 @@ trait HasUploads
         if ($value instanceof UploadedFile) {
             $ext = strtolower($value->getClientOriginalExtension());
             if ($allowed && ! in_array($ext, $allowed, true)) {
-                return; // Extension non autorisée
+                return;
             }
 
-            // 1. Supprimer l'ancienne image de Cloudinary si elle existe
-            $oldPath = $this->attributes[$attribute] ?? null;
-            if ($oldPath && str_contains($oldPath, 'res.cloudinary.com')) {
-                $this->deleteCloudinaryFile($oldPath);
-            }
-
-            // 2. Envoyer la nouvelle image sur Cloudinary
             try {
+                // 1. Envoyer le nouveau fichier (images + mp4)
                 $result = (new UploadApi())->upload($value->getRealPath(), [
-                    'folder' => $dir, // ex: uploads/articles
+                    'folder'        => $dir,
+                    'resource_type' => 'auto',
                 ]);
 
-                // 3. Sauvegarder l'URL complète HTTPS en BDD
+                // 2. Supprimer l'ancien seulement si l'upload a réussi
+                $old = $this->attributes[$attribute] ?? null;
+                if ($old && str_contains($old, 'res.cloudinary.com')) {
+                    $this->deleteCloudinaryFile($old);
+                }
+
+                // 3. Sauvegarder l'URL HTTPS
                 $this->attributes[$attribute] = $result['secure_url'];
-
-            } catch (\Exception $e) {
-                Log::error('Erreur Upload Cloudinary: ' . $e->getMessage());
+            } catch (\Throwable $e) {
+                Log::error('Erreur upload Cloudinary: '.$e->getMessage());
             }
-
         } elseif (is_string($value) && $value !== '') {
             $this->attributes[$attribute] = $value;
         }
@@ -45,43 +44,37 @@ trait HasUploads
         if (! $path) {
             return $default;
         }
-
-        // Si c'est déjà une URL complète (ex: Cloudinary)
         if (str_starts_with($path, 'http')) {
             return $path;
         }
-
-        // Pour les anciennes images locales (le temps de les re-uploader)
         if (str_starts_with($path, 'assets/')) {
             return asset($path);
         }
-
-        return asset('storage/'.$path);
+        return asset('storage/'.$path); // anciens fichiers locaux
     }
 
-    /**
-     * Supprime une image de Cloudinary via son URL
-     */
     protected function deleteCloudinaryFile(string $url): void
     {
         try {
-            // Extrait l'ID public de l'URL (ex: 'uploads/articles/abc123')
-            $parts = explode('/upload/', $url);
-            if (count($parts) > 1) {
-                $publicIdWithExt = $parts[1];
-                // Enlève le préfixe de version (v123456/) s'il est présent
-                if (preg_match('/^v\d+\/(.+)$/', $publicIdWithExt, $matches)) {
-                    $publicId = $matches[1];
-                } else {
-                    $publicId = $publicIdWithExt;
-                }
-                // Enlève l'extension (.jpg, .png, etc.)
-                $publicId = preg_replace('/\.[^.]+$/', '', $publicId);
-
-                (new UploadApi())->destroy($publicId);
+            // https://res.cloudinary.com/<cloud>/<type>/upload/[transfo/]v123/folder/name.ext
+            if (! preg_match('#/(image|video|raw)/upload/(?:.*?/)?(?:v\d+/)?(.+)$#', $url, $m)) {
+                return;
             }
-        } catch (\Exception $e) {
-            // On ignore l'erreur si la suppression échoue (fichier déjà supprimé)
+
+            $resourceType = $m[1];
+            $publicId = urldecode($m[2]);
+
+            // Pour image/video l'extension ne fait pas partie du public_id (pour raw, si)
+            if ($resourceType !== 'raw') {
+                $publicId = preg_replace('/\.[^.\/]+$/', '', $publicId);
+            }
+
+            (new UploadApi())->destroy($publicId, [
+                'resource_type' => $resourceType,
+                'invalidate'    => true,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Suppression Cloudinary échouée: '.$e->getMessage());
         }
     }
 }
