@@ -79,7 +79,7 @@
 <!-- Sidebar Mobile -->
 <div class="mobile-sidebar mobile-sidebar12">
   <div class="logosicon-area">
-    <div class="logos"><img src="{{ asset('assets/img/logo/logo.png') }}" alt=""></div>
+    <div class="logos"><img src="{{ asset('assets/img/logo/logo-5.png') }}" alt="الجريدة"></div>
     <div class="menu-close"><i class="fa-solid fa-xmark"></i></div>
   </div>
 

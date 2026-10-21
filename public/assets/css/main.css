@@ -9393,11 +9393,13 @@ Location:
   background: var(--ztc-text-text-1);
   position: fixed;
 }
-.mobile-header.mobile-haeder12 .mobile-logo img {
-  width: 140px;
-  height: 40px;
-  -o-object-fit: cover;
-     object-fit: cover;
+.mobile-header.mobile-haeder12 .mobile-logo img,
+.mobile-sidebar.mobile-sidebar12 .logos img {
+  width: auto;
+  height: auto;
+  max-width: 160px;
+  max-height: 48px;
+  object-fit: contain;
 }
 
 .mobile-sidebar.mobile-sidebar12 {
@@ -9416,12 +9418,7 @@ Location:
   left: 20px;
   right: inherit;
 }
-.mobile-sidebar.mobile-sidebar12 .logos img {
-  width: 140px;
-  height: 40px;
-  -o-object-fit: cover;
-     object-fit: cover;
-}
+
 .mobile-sidebar.mobile-sidebar12 .mobile-nav.mobile-nav1 .mobile-nav-list.nav-list1 li a {
   font-weight: var(--ztc-weight-medium);
   color: #055346;
@@ -32287,4 +32284,7 @@ Location:
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background: #055346 !important;
+}
+.mobile-sidebar.mobile-sidebar12 span.submenu-button {
+  display: none !important;
 }
