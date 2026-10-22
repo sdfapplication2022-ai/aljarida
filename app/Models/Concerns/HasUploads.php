@@ -45,14 +45,17 @@ trait HasUploads
             return $default;
         }
         if (str_starts_with($path, 'http')) {
+            // images Cloudinary : format et qualité automatiques
+            if (str_contains($path, '/image/upload/') && ! str_contains($path, '/image/upload/f_auto')) {
+                return str_replace('/image/upload/', '/image/upload/f_auto,q_auto/', $path);
+            }
             return $path;
         }
         if (str_starts_with($path, 'assets/')) {
             return asset($path);
         }
-        return asset('storage/'.$path); // anciens fichiers locaux
+        return asset('storage/'.$path);
     }
-
     protected function deleteCloudinaryFile(string $url): void
     {
         try {
