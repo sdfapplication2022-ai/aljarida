@@ -67,14 +67,29 @@ class AdminResources
                 ],
             ],
             'blogs' => [
-                'model' => Blog::class, 'title' => 'المدونة', 'single' => 'تدوينة', 'icon' => 'fa-pen',
-                'columns' => ['id' => '#', 'title' => 'العنوان', 'author' => 'الكاتب', 'published_at' => 'التاريخ'], 'search' => ['title'],
+                'model'    => Blog::class,
+                'title'    => 'المدونات',
+                'single'   => 'مدونة',
+                'icon'     => 'fa-blog',
+                'with'     => [],
+                'search'   => ['title', 'content', 'author', 'excerpt'],
+                'formView' => 'admin.blogs.form',
+
                 'fields' => [
-                    ['title', 'العنوان', 'text', 'required|string|max:255'],
-                    ['author', 'الكاتب', 'text', 'nullable|string|max:255'],
-                    ['content', 'المحتوى', 'richtext', 'nullable|string'],
-                    ['image', 'الصورة', 'file', $img],
-                    ['published_at', 'تاريخ النشر', 'datetime', 'nullable|date'],
+                    ['title',            'العنوان',   'text',     'required|string|max:255'],
+                    ['excerpt',          'مقتطف',     'textarea', 'nullable|string|max:500'],
+                    ['content',          'المحتوى',   'richtext', 'required|string'],
+                    ['meta_title',       'عنوان SEO', 'text',     'nullable|string|max:70'],
+                    ['meta_description', 'وصف SEO',   'textarea', 'nullable|string|max:170'],
+                    ['author',           'الكاتب',    'text',     'required|string|max:255'],
+                    ['published_at',     'تاريخ النشر','datetime','nullable|date'],
+                    ['image',            'الصورة',    'file',     'nullable|image|max:8192'],
+                ],
+
+                'columns' => [
+                    'title'        => 'العنوان',
+                    'author'       => 'الكاتب',
+                    'published_at' => 'تاريخ النشر',
                 ],
             ],
             'comments' => [
