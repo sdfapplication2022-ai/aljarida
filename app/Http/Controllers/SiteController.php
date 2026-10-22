@@ -12,6 +12,10 @@ use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
+    public function ping()
+    {
+        return response('ok', 200);
+    }
     public function home(Request $request)
     {
         // Pas de cache des modèles Eloquent : Laravel 12 refuse de les désérialiser (voir cache.serializable_classes)

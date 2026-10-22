@@ -6,7 +6,7 @@ use App\Http\Middleware\StaffOnly;
 use App\Http\Controllers\SeoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PollController;
-Route::get('/ping', fn () => response('ok'));
+Route::get('/ping', [SiteController::class, 'ping'])->name('ping');
 Route::post('/poll/{poll}/vote', [PollController::class, 'vote'])
     ->name('poll.vote')->whereNumber('poll')->middleware('throttle:20,1');
 Route::get('/search/suggest', [SiteController::class, 'suggest'])->name('search.suggest')->middleware('throttle:60,1');
