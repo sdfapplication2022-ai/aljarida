@@ -49,7 +49,7 @@
       <div class="col-lg-7">
           <div class="case-pera-area heading2">
               <h2>{{ $blog->title }}</h2>
-              <div class="article-body">{!! clean($blog->content) !!}</div>
+              <div class="article-body">{!! clean($blog->display_content) !!}</div>
           </div>
       </div>
       <div class="col-lg-5">

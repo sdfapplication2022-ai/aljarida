@@ -29,7 +29,7 @@
           </li>
         </ul>
       </div>
-      <a href="{{ route('article', $a->slug) }}">{{ $a->title }}</a>
+      <a href="{{ route('article', $a->slug) }}" dir="auto">{{ $a->title }}</a>
       <p>{{ \Illuminate\Support\Str::limit($a->excerpt, 100) }}</p>
       <a href="{{ route('article', $a->slug) }}" class="readmore">
         قراءة المزيد <i class="fa-solid fa-arrow-left"></i>

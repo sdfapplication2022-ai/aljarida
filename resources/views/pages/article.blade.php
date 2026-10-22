@@ -50,7 +50,7 @@
             </ul>
           </div>
 
-          <h2>{{ $article->title }}</h2>
+          <h2 dir="auto">{{ $article->title }}</h2>
           <div class="space34"></div>
 
           @include('partials.article-tools')
@@ -68,7 +68,7 @@
             <div class="space24"></div>
           @endif
 
-          <div class="article-body">{!! clean($article->content) !!}</div>
+          <div class="article-body">{!! clean($article->display_content) !!}</div>
           <div class="space50"></div>
 
           <div class="social-tags">
@@ -140,7 +140,7 @@
                 </div>
               </div>
               <div class="space16"></div>
-              <p>{{ $c->content }}</p>
+              <p dir="auto">{{ $c->content }}</p>
               @if ($mine)
                 <form action="{{ route('comment.destroy', $c) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('هل تريد حذف تعليقك؟')">
@@ -266,5 +266,6 @@
     });
 })();
 </script>
+
 @endpush
 @endonce

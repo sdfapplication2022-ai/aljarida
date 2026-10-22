@@ -68,7 +68,7 @@
     <div class="col-12">
       <div class="mobile-header-elements">
         <div class="mobile-logo">
-          <a href="{{ route('home') }}"><img src="{{ asset('assets/img/logo/logo.png') }}" alt=""></a>
+          <a href="{{ route('home') }}"><img src="{{ asset('assets/img/logo/logo-5.png') }}" alt=""></a>
         </div>
         <div class="mobile-nav-icon dots-menu"><i class="fa-solid fa-bars"></i></div>
       </div>

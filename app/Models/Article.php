@@ -74,10 +74,14 @@ class Article extends Model
             ->latest('published_at');
     }
 
-    /** Nettoie le HTML à l'enregistrement (composer require mews/purifier). */
+    /**
+     * Nettoie le HTML à l'enregistrement (composer require mews/purifier).
+     * Les images emoji copiées depuis Facebook sont converties en vrais emojis.
+     */
     public function setContentAttribute($value): void
     {
-        $this->attributes['content'] = clean((string) $value);
+        $value = static::convertEmojiImages((string) $value);
+        $this->attributes['content'] = clean($value);
     }
 
     public function setImageAttribute($value): void
@@ -106,22 +110,96 @@ class Article extends Model
     public function tags()     { return $this->belongsToMany(Tag::class); }
     public function likes()    { return $this->hasMany(ArticleLike::class); }
 
-public function getEstimatedReadingTimeAttribute(): int
-{
-    $text  = strip_tags((string) $this->content);
-    $words = preg_match_all('/\p{L}+/u', $text, $m) ?: 0;
-    return max(1, (int) ceil($words / 200));
-}
-
-public function getExcerptAttribute(): string
-{
-    $manual = trim((string) ($this->attributes['excerpt'] ?? ''));
-    if ($manual !== '') {
-        return $manual;
+    public function getEstimatedReadingTimeAttribute(): int
+    {
+        $text  = strip_tags((string) $this->content);
+        $words = preg_match_all('/\p{L}+/u', $text, $m) ?: 0;
+        return max(1, (int) ceil($words / 200));
     }
-    $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
-}
+
+    /**
+     * Remplace les <img> emoji (Facebook : .../emoji.php/.../1f680.png) par le caractère Unicode.
+     * Les vraies images (photos) ne sont pas touchées.
+     */
+    protected static function convertEmojiImages(string $html): string
+    {
+        return preg_replace_callback(
+            '#(?:<span\b[^>]*>\s*)?<img\b[^>]*>(?:\s*</span>)?#i',
+            function ($m) {
+                $tag = $m[0];
+
+                // uniquement les images emoji (fbcdn / emoji.php / alt du type "1f680.png")
+                if (! preg_match('#fbcdn|emoji\.php|alt=["\'][0-9a-f_]{3,}\.png["\']#i', $tag)) {
+                    return $tag;
+                }
+                if (! preg_match('#([0-9a-f]{3,6}(?:_[0-9a-f]{3,6})*)\.png#i', $tag, $h)) {
+                    return $tag;
+                }
+
+                $out = '';
+                foreach (explode('_', $h[1]) as $hex) {
+                    $out .= mb_chr(hexdec($hex), 'UTF-8');
+                }
+                return $out;
+            },
+            $html
+        );
+    }
+
+    /**
+     * Contenu prêt pour l'affichage :
+     *  - images emoji → vrais emojis
+     *  - chaque <br> devient un nouveau paragraphe
+     *  - spans / styles inline / paragraphes vides supprimés
+     *  - dir="rtl" ou dir="ltr" posé par paragraphe selon la première vraie lettre
+     */
+    public function getDisplayContentAttribute(): string
+    {
+        $html = trim((string) $this->content);
+        if ($html === '') {
+            return '';
+        }
+
+        // 1) emojis (anciens articles encore stockés avec des images)
+        $html = static::convertEmojiImages($html);
+
+        // 2) tout <br> devient un nouveau paragraphe
+        $html = preg_replace('#<br\s*/?>#i', '</p><p>', $html);
+
+        // 3) nettoyage : spans, styles inline, attributs d'alignement, paragraphes vides
+        $html = preg_replace('#</?span\b[^>]*>#i', '', $html);
+        $html = preg_replace('#\s(?:style|align)="[^"]*"#i', '', $html);
+        $html = preg_replace('#<p[^>]*>\s*(?:&nbsp;|\s)*</p>#i', '', $html);
+
+        // 4) direction par bloc, selon la première lettre réelle
+        //    (les emojis, chiffres et ponctuation sont ignorés)
+        $html = preg_replace_callback('#<(p|li|h[1-6])(\s[^>]*)?>(.*?)</\1>#is', function ($m) {
+            $text = html_entity_decode(strip_tags($m[3]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+            if (preg_match('/\p{L}/u', $text, $l)) {
+                $isRtl = preg_match('/[\x{0590}-\x{08FF}\x{FB1D}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $l[0]);
+                $dir   = $isRtl ? 'rtl' : 'ltr';
+            } else {
+                $dir = 'rtl'; // pas de lettre (ex. emoji seul) : direction du site
+            }
+
+            $attrs = preg_replace('#\sdir="[^"]*"#i', '', $m[2] ?? '');
+
+            return '<'.$m[1].$attrs.' dir="'.$dir.'">'.$m[3].'</'.$m[1].'>';
+        }, $html);
+
+        return $html;
+    }
+
+    public function getExcerptAttribute(): string
+    {
+        $manual = trim((string) ($this->attributes['excerpt'] ?? ''));
+        if ($manual !== '') {
+            return $manual;
+        }
+        $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
+    }
 
     /** « منذ ساعتين » */
     public function getTimeAgoAttribute(): string

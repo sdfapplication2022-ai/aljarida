@@ -32379,3 +32379,34 @@ Location:
     .post-nav-next { text-align: left; }
     @media (max-width: 575px) { .post-nav { grid-template-columns: 1fr; } .post-nav-next { text-align: right; } }
 
+.article-body { line-height: 1.8; font-size: 18px; }
+
+.article-body p,
+.article-body li,
+.article-body h2, .article-body h3, .article-body h4,
+.article-body blockquote {
+  unicode-bidi: isolate;      /* chaque bloc isolé de son voisin */
+  text-align: start !important; /* start = gauche en LTR, droite en RTL */
+  margin: 0 0 .9em;
+  line-height: inherit !important;
+}
+.article-body img[src*="emoji.php"] {
+  display: inline !important;
+  width: 1.1em !important;
+  height: 1.1em !important;
+  margin: 0 .15em !important;
+  vertical-align: -0.15em;
+  cursor: default;
+  max-width: none !important;
+}
+.article-body img[src*="emoji"],
+.article-body img[alt$=".png"] {
+  display: inline !important;
+  float: none !important;
+  width: 1.15em !important;
+  height: 1.15em !important;
+  margin: 0 .2em !important;
+  vertical-align: -0.2em;
+  max-width: none !important;
+  max-height: none !important;
+}
