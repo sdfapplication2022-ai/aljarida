@@ -11,8 +11,8 @@
       <div class="col-lg-6"><div class="input-area"><input type="text" name="phone" value="{{ old('phone') }}" placeholder="رقم الهاتف"></div></div>
       <div class="col-lg-12">
         <div class="input-area">
-          <select name="service_type" class="country-area nice-select6">
-            <option value="">نوع الخدمة</option>
+          <select name="service_type" class="country-area nice-select6" dir="rtl">
+            <option  value="">نوع الخدمة</option>
             @foreach (($services ?? collect())->pluck('title') as $t)
               <option value="{{ $t }}" @selected(old('service_type') === $t)>{{ $t }}</option>
             @endforeach

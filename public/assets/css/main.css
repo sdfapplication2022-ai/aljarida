@@ -32468,3 +32468,25 @@ Location:
         box-sizing: border-box !important;
     }
 }
+
+/* RTL service selector */
+.contact12-section-area .contact-boxarea .nice-select6 {
+  direction: rtl;
+  text-align: right !important;
+  padding-right: 18px;
+  padding-left: 30px;
+}
+.contact12-section-area .contact-boxarea .nice-select6::after {
+  right: auto;
+  left: 12px;
+}
+.contact12-section-area .contact-boxarea .nice-select6 .list {
+  left: auto;
+  right: 0;
+}
+.contact12-section-area .contact-boxarea .nice-select6 .option {
+  direction: rtl;
+  text-align: right;
+  padding-right: 18px;
+  padding-left: 29px;
+}

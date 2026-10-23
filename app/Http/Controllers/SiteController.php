@@ -282,7 +282,7 @@ public function like(Request $request, Article $article)
         $comment = Comment::create([
             'content'       => strip_tags($data['content']),
             'article_id'    => $article->id,
-            'is_approved'   => false,
+            'is_approved'   => true,
             'guest_name'    => $user ? null : strip_tags($data['guest_name']),
             'guest_email'   => $user ? null : $data['guest_email'],
             'visitor_token' => Visitor::token($request),
