@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Article, Category, Tag};
+use App\Models\Article;
+use App\Models\Category;
+use App\Models\GuidePlace;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Cache;
 
 class SeoController extends Controller
@@ -11,10 +14,15 @@ class SeoController extends Controller
     {
         $xml = Cache::remember('sitemap_xml', 3600, function () {
             return view('seo.sitemap', [
-                'articles'   => Article::published()->select('slug', 'updated_at', 'published_at')
-                                    ->latest('published_at')->limit(5000)->get(),
+                'articles' => Article::published()->select('slug', 'updated_at', 'published_at')
+                    ->latest('published_at')->limit(5000)->get(),
                 'categories' => Category::select('slug', 'updated_at')->get(),
-                'tags'       => Tag::select('slug', 'updated_at')->get(),
+                'tags' => Tag::select('slug', 'updated_at')->get(),
+                'guidePlaces' => GuidePlace::published()
+                    ->select('slug', 'updated_at')
+                    ->latest('updated_at')
+                    ->limit(5000)
+                    ->get(),
             ])->render();
         });
 
@@ -26,7 +34,7 @@ class SeoController extends Controller
         $xml = Cache::remember('rss_feed', 600, function () {
             return view('seo.feed', [
                 'articles' => Article::published()->with(['category', 'user'])
-                                ->latest('published_at')->take(30)->get(),
+                    ->latest('published_at')->take(30)->get(),
             ])->render();
         });
 
@@ -36,6 +44,7 @@ class SeoController extends Controller
     public function robots()
     {
         $txt = "User-agent: *\nDisallow: /admin\nDisallow: /search\n\nSitemap: ".route('sitemap')."\n";
+
         return response($txt, 200, ['Content-Type' => 'text/plain']);
     }
 }

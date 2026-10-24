@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Support\AdminResources;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 /** Contrôleur CRUD générique piloté par App\Support\AdminResources. */
 class ResourceController extends Controller
@@ -17,6 +17,7 @@ class ResourceController extends Controller
         if (($cfg['adminOnly'] ?? false) && ! auth()->user()->isAdmin()) {
             abort(403);
         }
+
         return $cfg + ['create' => true, 'edit' => true, 'key' => $resource];
     }
 
@@ -45,6 +46,7 @@ class ResourceController extends Controller
         abort_unless($cfg['create'], 404);
 
         $view = $cfg['formView'] ?? 'admin.crud.form';   // 👈
+
         return view($view, ['cfg' => $cfg, 'item' => new $cfg['model']]);
     }
 
@@ -65,6 +67,7 @@ class ResourceController extends Controller
         abort_unless($cfg['edit'], 404);
 
         $view = $cfg['formView'] ?? 'admin.crud.form';   // 👈
+
         return view($view, ['cfg' => $cfg, 'item' => $cfg['model']::findOrFail($id)]);
     }
 
@@ -88,6 +91,7 @@ class ResourceController extends Controller
         }
 
         $item->delete();
+
         return back()->with('success', 'تم الحذف بنجاح');
     }
 
@@ -128,6 +132,23 @@ class ResourceController extends Controller
                     $v = $request->input($name);
                     $v = is_string($v) ? trim(clean($v)) : null;
                     $data[$name] = ($v === '' || $v === '<p></p>' || $v === '<p><br></p>') ? null : $v;
+                    break;
+                case 'json':
+                    $value = $request->input($name);
+                    if ($value === null || $value === '') {
+                        $data[$name] = null;
+                        break;
+                    }
+
+                    $decoded = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+                    if (! is_array($decoded) || ! array_is_list($decoded)
+                        || collect($decoded)->contains(fn ($item): bool => ! is_string($item))) {
+                        throw ValidationException::withMessages([
+                            $name => 'يجب إدخال قائمة JSON تحتوي على نصوص فقط.',
+                        ]);
+                    }
+
+                    $data[$name] = $decoded;
                     break;
                 default:
                     $data[$name] = $request->input($name) === '' ? null : $request->input($name);

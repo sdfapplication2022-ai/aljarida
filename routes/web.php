@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ResourceController;
+use App\Http\Controllers\GuidePlaceController;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\ReaderController;
 use App\Http\Controllers\SeoController;
@@ -21,6 +22,8 @@ Route::get('/search', [SiteController::class, 'search'])->name('search')->middle
 Route::get('/saved-articles', [ReaderController::class, 'saved'])->name('reader.saved');
 Route::post('/article/{article}/save', [ReaderController::class, 'toggleSaved'])->name('article.save')->middleware('throttle:30,1');
 Route::get('/events', [VisitorContentController::class, 'events'])->name('events.index');
+Route::get('/guide-places', [GuidePlaceController::class, 'index'])->name('guide-places.index');
+Route::get('/guide-places/{guidePlace}', [GuidePlaceController::class, 'show'])->name('guide-places.show');
 Route::get('/sports-results', [VisitorContentController::class, 'sports'])->name('sports.results');
 Route::get('/news-by-city', [VisitorContentController::class, 'cityNews'])->name('city-news');
 Route::get('/tag/{slug}', [SiteController::class, 'tag'])->name('tag');

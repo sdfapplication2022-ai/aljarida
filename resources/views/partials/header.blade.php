@@ -48,6 +48,7 @@
                   <ul class="nav-dropdown">
                     <li><a href="{{ route('reader.saved') }}">للقراءة لاحقًا</a></li>
                     <li><a href="{{ route('events.index') }}">دليل الفعاليات</a></li>
+                    <li><a href="{{ route('guide-places.index') }}">دليل الأماكن</a></li>
                     <li><a href="{{ route('city-news') }}">أخبار المدن</a></li>
                     <li><a href="{{ route('sports.results') }}">نتائج الرياضة</a></li>
                   </ul>
@@ -130,6 +131,7 @@
     <div class="reader-links-mobile mb-3">
       <a href="{{ route('reader.saved') }}">للقراءة لاحقًا</a>
       <a href="{{ route('events.index') }}">دليل الفعاليات</a>
+      <a href="{{ route('guide-places.index') }}">دليل الأماكن</a>
       <a href="{{ route('city-news') }}">أخبار المدن</a>
       <a href="{{ route('sports.results') }}">نتائج الرياضة</a>
     </div>

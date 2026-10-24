@@ -16,7 +16,10 @@
         @php
             $name = $f[0]; $label = $f[1]; $type = $f[2];
             $opt = $f[4] ?? [];
-            $current = old($name, $type === 'password' ? '' : ($item->{$name} ?? null));
+            $currentValue = old($name, $type === 'password' ? '' : ($item->{$name} ?? null));
+            $current = $type === 'json' && is_array($currentValue)
+                ? json_encode($currentValue, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+                : $currentValue;
         @endphp
         <div class="mb-3">
             @if ($type === 'checkbox')
@@ -29,10 +32,16 @@
                 <label class="form-label" for="f_{{ $name }}">{{ $label }}</label>
 
                 @if (in_array($type, ['text','email','password','number','url']))
-                    <input type="{{ $type }}" class="form-control" id="f_{{ $name }}" name="{{ $name }}" value="{{ $current }}" @if($type==='number') min="1" max="5" @endif>
+                    <input type="{{ $type }}" class="form-control" id="f_{{ $name }}" name="{{ $name }}" value="{{ $current }}"
+                           @if($type==='number') step="{{ $opt['step'] ?? 1 }}" @endif
+                           @if(isset($opt['min'])) min="{{ $opt['min'] }}" @endif
+                           @if(isset($opt['max'])) max="{{ $opt['max'] }}" @endif>
 
                 @elseif ($type === 'textarea')
                     <textarea class="form-control" rows="4" id="f_{{ $name }}" name="{{ $name }}">{{ $current }}</textarea>
+
+                @elseif ($type === 'json')
+                    <textarea class="form-control" rows="6" id="f_{{ $name }}" name="{{ $name }}" dir="auto">{{ $current }}</textarea>
 
                 @elseif ($type === 'richtext')
                     <textarea class="form-control js-wysiwyg" rows="10" id="f_{{ $name }}" name="{{ $name }}" dir="auto">{{ $current }}</textarea>

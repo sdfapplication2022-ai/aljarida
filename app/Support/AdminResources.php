@@ -8,6 +8,7 @@ use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\ContactMessage;
+use App\Models\GuidePlace;
 use App\Models\LocalEvent;
 use App\Models\Poll;
 use App\Models\Service;
@@ -87,6 +88,43 @@ class AdminResources
                     ['url', 'رابط الحجز أو المزيد', 'url', 'nullable|url|max:255'],
                     ['starts_at', 'موعد البدء', 'datetime', 'required|date'],
                     ['ends_at', 'موعد الانتهاء', 'datetime', 'nullable|date|after_or_equal:starts_at'],
+                    ['is_published', 'منشور', 'checkbox', 'nullable|boolean'],
+                ],
+            ],
+            'guide-places' => [
+                'model' => GuidePlace::class,
+                'title' => 'دليل الأماكن',
+                'single' => 'مكان',
+                'icon' => 'fa-map-location-dot',
+                'slugFrom' => 'name',
+                'search' => ['name', 'city', 'address', 'near_campus'],
+                'formView' => 'admin.guide-places.form',
+                'valueLabels' => ['type' => GuidePlace::TYPE_LABELS],
+                'columns' => [
+                    'name' => 'الاسم',
+                    'type' => 'النوع',
+                    'city' => 'المدينة',
+                    'is_verified' => 'موثّق',
+                    'is_published' => 'منشور',
+                ],
+                'fields' => [
+                    ['name', 'الاسم', 'text', 'required|string|max:255'],
+                    ['slug', 'الرابط (اختياري)', 'text', 'nullable|string|max:255|unique:guide_places,slug,{id}'],
+                    ['type', 'النوع', 'select', 'required|in:'.implode(',', GuidePlace::TYPES), ['choices' => GuidePlace::TYPE_LABELS]],
+                    ['city', 'المدينة', 'text', 'required|string|max:100'],
+                    ['address', 'العنوان', 'text', 'nullable|string|max:255'],
+                    ['near_campus', 'الكلية أو المعهد القريب', 'text', 'nullable|string|max:255'],
+                    ['description', 'الوصف', 'richtext', 'nullable|string'],
+                    ['price_from', 'السعر ابتداءً من (دينار)', 'number', 'nullable|integer|min:0|max:4294967295', ['min' => 0, 'max' => 4294967295]],
+                    ['price_unit', 'وحدة السعر', 'text', 'nullable|string|max:20'],
+                    ['phone', 'الهاتف', 'text', 'nullable|string|max:30'],
+                    ['whatsapp', 'واتساب', 'text', 'nullable|string|max:30'],
+                    ['website', 'الموقع الإلكتروني', 'url', 'nullable|url:http,https|max:255'],
+                    ['latitude', 'خط العرض', 'number', 'nullable|numeric|between:-90,90', ['min' => -90, 'max' => 90, 'step' => 'any']],
+                    ['longitude', 'خط الطول', 'number', 'nullable|numeric|between:-180,180', ['min' => -180, 'max' => 180, 'step' => 'any']],
+                    ['amenities', 'المرافق (مصفوفة JSON نصية)', 'json', 'nullable|json'],
+                    ['image', 'الصورة', 'file', 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192'],
+                    ['is_verified', 'موثّق', 'checkbox', 'nullable|boolean'],
                     ['is_published', 'منشور', 'checkbox', 'nullable|boolean'],
                 ],
             ],

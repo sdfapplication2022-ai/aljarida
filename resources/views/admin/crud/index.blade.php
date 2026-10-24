@@ -37,6 +37,8 @@
                             <td>
                                 @if (is_bool($val))
                                     <span class="badge rounded-pill bg-{{ $val ? 'success' : 'secondary' }} px-3">{{ $val ? 'نعم' : 'لا' }}</span>
+                                @elseif (isset($cfg['valueLabels'][$col][$val]))
+                                    {{ $cfg['valueLabels'][$col][$val] }}
                                 @elseif ($val instanceof \Carbon\Carbon)
                                     <span class="text-muted"><i class="fa-regular fa-clock me-1"></i> {{ $val->format('Y/m/d H:i') }}</span>
                                 @else

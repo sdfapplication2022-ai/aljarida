@@ -22,6 +22,7 @@
           <ul>
             <li><a href="{{ route('home') }}">الرئيسية</a></li>
             <li><a href="{{ route('team') }}">فريق التحرير</a></li>
+            <li><a href="{{ route('guide-places.index') }}">دليل الأماكن</a></li>
             <li><a href="{{ route('subscribe') }}">النشرة البريدية</a></li>
             <li><a href="{{ route('contact') }}">اتصل بنا</a></li>
           </ul>
