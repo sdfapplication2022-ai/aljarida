@@ -90,11 +90,32 @@ class SiteController extends Controller
                 ->sortByDesc(fn ($cat) => optional($cat->latestArticles->first()->published_at)->timestamp ?? 0)
                 ->take(4)->values();
 
+            // Même logique que la page « نتائج الرياضة » : matchs à venir / matchs déjà joués
+            $sportsUpcoming = SportsResult::published()
+                ->where('played_at', '>=', now())
+                ->orderBy('played_at')->orderBy('id')
+                ->take(2)->get();
+
+            $sportsPlayed = SportsResult::published()
+                ->where('played_at', '<', now())
+                ->orderByDesc('played_at')->orderByDesc('id')
+                ->take(2)->get();
+
+            if ($sportsUpcoming->isEmpty()) {
+                $sportsPlayed = SportsResult::published()
+                    ->where('played_at', '<', now())
+                    ->orderByDesc('played_at')->orderByDesc('id')
+                    ->take(4)->get();
+            } elseif ($sportsPlayed->isEmpty()) {
+                $sportsUpcoming = SportsResult::published()
+                    ->where('played_at', '>=', now())
+                    ->orderBy('played_at')->orderBy('id')
+                    ->take(4)->get();
+            }
+
             return compact('featured', 'breaking', 'mostRead', 'latest', 'sections') + [
-                'sportsResults' => SportsResult::where('is_published', true)
-                    ->orderByDesc('played_at')
-                    ->take(4)
-                    ->get(),
+                'sportsUpcoming' => $sportsUpcoming,
+                'sportsPlayed' => $sportsPlayed,
                 // Sections du site conservées
                 'about' => About::first(),
                 'services' => Service::all(),

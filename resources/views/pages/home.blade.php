@@ -332,7 +332,9 @@
   </div>
 </div>
 @endif
-@if (isset($sportsResults) && $sportsResults->count())
+@php($hasUpcomingSports = isset($sportsUpcoming) && $sportsUpcoming->isNotEmpty())
+@php($hasPlayedSports = isset($sportsPlayed) && $sportsPlayed->isNotEmpty())
+@if ($hasUpcomingSports || $hasPlayedSports)
 @include('partials.sports-styles')
 <div class="sp2">
   <div class="container">
@@ -341,15 +343,34 @@
         <div class="blog-header heading18 space-margin60 text-center">
           <h5>الرياضة</h5>
           <div class="space16"></div>
-          <h2>آخر النتائج</h2>
+          <h2>المباريات والنتائج</h2>
         </div>
       </div>
     </div>
-    <div class="row g-4">
-      @foreach ($sportsResults as $result)
-        <div class="col-lg-6">@include('partials.sports-card', ['result' => $result])</div>
-      @endforeach
-    </div>
+
+    @if ($hasUpcomingSports)
+      <div class="sp-group-head">
+        <h3><i class="fa-regular fa-calendar-check"></i>المباريات القادمة</h3>
+        <span class="sp-group-count">{{ $sportsUpcoming->count() }} مباراة</span>
+      </div>
+      <div class="row g-4">
+        @foreach ($sportsUpcoming as $result)
+          <div class="col-lg-6">@include('partials.sports-card', ['result' => $result, 'isUpcoming' => true])</div>
+        @endforeach
+      </div>
+    @endif
+
+    @if ($hasPlayedSports)
+      <div class="sp-group-head {{ $hasUpcomingSports ? 'mt-5' : '' }}">
+        <h3><i class="fa-solid fa-flag-checkered"></i>المباريات التي لُعبت</h3>
+        <span class="sp-group-count">{{ $sportsPlayed->count() }} مباراة</span>
+      </div>
+      <div class="row g-4">
+        @foreach ($sportsPlayed as $result)
+          <div class="col-lg-6">@include('partials.sports-card', ['result' => $result, 'isUpcoming' => false])</div>
+        @endforeach
+      </div>
+    @endif
     <div class="text-center mt-4">
       <a href="{{ url('/sports-results') }}" class="header-btn20">كل النتائج <i class="fa-solid fa-angle-left"></i></a>
     </div>

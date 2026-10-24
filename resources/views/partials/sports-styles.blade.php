@@ -22,6 +22,10 @@
   .sp-score small{font-size:1.6rem;opacity:.6}
   .sp-place{margin:18px 0 0;text-align:center;font-size:14px;color:#6b7570}
   .sp-place i{color:#7ac70c;margin-inline-end:4px}
+  .sp-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 18px}
+  .sp-group-head h3{display:flex;align-items:center;gap:8px;margin:0;font-size:20px;font-weight:700;color:#055346}
+  .sp-group-head h3 i{color:#7ac70c;font-size:16px}
+  .sp-group-count{background:#e9f7d2;color:#14301f;font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;white-space:nowrap}
   @media (max-width:575px){
     .sp-logo{width:52px;height:52px}
     .sp-score{font-size:1.8rem}
