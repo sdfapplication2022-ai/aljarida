@@ -32526,3 +32526,8 @@ Location:
   padding-right: 18px;
   padding-left: 29px;
 }
+.np-match{padding:10px 0;border-top:1px solid #eef1ef}
+.np-match-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:600}
+.np-match .score{min-width:56px;text-align:center;background:#f4f6f5;border-radius:6px;padding:2px 8px}
+.np-match.is-live .score{background:#14301f;color:#fff}
+.live-badge{color:#d62828;font-size:12px;font-weight:700}

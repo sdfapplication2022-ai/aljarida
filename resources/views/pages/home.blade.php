@@ -377,6 +377,19 @@
   </div>
 </div>
 @endif
+
+@if (! empty($matches))
+<div class="np-wrap" style="padding-top: 0; padding-bottom: 0;">
+  <div class="np-container">
+    <div class="np-section-title">
+      <h2>مباريات اليوم</h2>
+      <a href="{{ route('matches.index') }}">كل المباريات <i class="fa-solid fa-angle-left"></i></a>
+    </div>
+    @include('partials.matches', ['matches' => $matches, 'limit' => 4])
+  </div>
+</div>
+@endif
+
 <div class="contact12-section-area sp6">
   <div class="container">
     <div class="row">

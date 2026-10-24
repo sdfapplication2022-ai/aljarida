@@ -51,6 +51,7 @@
                     <li><a href="{{ route('guide-places.index') }}">دليل الأماكن</a></li>
                     <li><a href="{{ route('city-news') }}">أخبار المدن</a></li>
                     <li><a href="{{ route('sports.results') }}">نتائج الرياضة</a></li>
+                    <li><a href="{{ route('matches.index') }}">مباريات اليوم</a></li>
                   </ul>
                 </li>
               </ul>
@@ -134,6 +135,7 @@
       <a href="{{ route('guide-places.index') }}">دليل الأماكن</a>
       <a href="{{ route('city-news') }}">أخبار المدن</a>
       <a href="{{ route('sports.results') }}">نتائج الرياضة</a>
+      <a href="{{ route('matches.index') }}">مباريات اليوم</a>
     </div>
 
     <div class="allmobilesection">

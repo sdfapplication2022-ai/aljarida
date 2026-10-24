@@ -19,6 +19,7 @@ use App\Models\Tag;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Services\Matches;
 use App\Services\Widgets;
 use App\Support\AdminNotifier;
 use App\Support\Visitor;
@@ -148,7 +149,19 @@ class SiteController extends Controller
             'widgets' => app(Widgets::class)->all(),
             'poll' => $poll,
             'pollVote' => $pollVote,
+            'matches' => app(Matches::class)->today(),
         ];
+    }
+
+    public function matches()
+    {
+        return response()->json(app(Matches::class)->today());
+    }
+
+    /** Page dédiée aux matchs du jour (les données de l'API sont rechargées côté client). */
+    public function matchesPage()
+    {
+        return view('pages.matches', ['matches' => app(Matches::class)->today()]);
     }
 
     public function category(string $slug)

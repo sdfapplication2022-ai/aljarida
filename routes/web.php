@@ -12,12 +12,16 @@ use App\Http\Controllers\VisitorContentController;
 use App\Http\Middleware\StaffOnly;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/api/matches', [SiteController::class, 'matches'])
+    ->name('api.matches')
+    ->middleware('throttle:60,1');
 Route::get('/ping', [SiteController::class, 'ping'])->name('ping');
 Route::post('/poll/{poll}/vote', [PollController::class, 'vote'])
     ->name('poll.vote')->whereNumber('poll')->middleware('throttle:20,1');
 Route::get('/search/suggest', [SiteController::class, 'suggest'])->name('search.suggest')->middleware('throttle:60,1');
 // ---------- Site public ----------
 Route::get('/', [SiteController::class, 'home'])->name('home');
+Route::get('/matches', [SiteController::class, 'matchesPage'])->name('matches.index');
 Route::get('/search', [SiteController::class, 'search'])->name('search')->middleware('throttle:30,1');
 Route::get('/saved-articles', [ReaderController::class, 'saved'])->name('reader.saved');
 Route::post('/article/{article}/save', [ReaderController::class, 'toggleSaved'])->name('article.save')->middleware('throttle:30,1');
