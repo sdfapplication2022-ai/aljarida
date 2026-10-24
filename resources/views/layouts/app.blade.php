@@ -19,7 +19,8 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/css/plugins/sidebar.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/css/plugins/slick-slider.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/css/plugins/nice-select.css">
-    <link rel="stylesheet" href="{{ asset('assets') }}/css/main.css">
+    @php($mainCssVersion = file_exists(public_path('assets/css/main.css')) ? filemtime(public_path('assets/css/main.css')) : null)
+    <link rel="stylesheet" href="{{ asset('assets') }}/css/main.css{{ $mainCssVersion ? '?v='.$mainCssVersion : '' }}">
     @stack('styles')
 
     <script src="{{ asset('assets') }}/js/plugins/jquery-3-6-0.min.js"></script>

@@ -32219,6 +32219,42 @@ Location:
   border-right-color: #7ac70c;
   background: rgba(122, 199, 12, .08);
 }
+
+/* ---------- Mobile : liens secondaires (للقراءة لاحقًا, دليل الفعاليات…) ---------- */
+.mobile-sidebar .reader-links-mobile {
+  margin: 4px 0 24px;
+  padding: 0;
+  border-top: 1px solid #eef1ef;
+}
+.mobile-sidebar .reader-links-mobile a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #055346;
+  text-decoration: none;
+  border-bottom: 1px solid #eef1ef;
+  transition: color .2s ease, padding .2s ease;
+}
+.mobile-sidebar .reader-links-mobile a::after {
+  content: "\f104"; /* fa-angle-left */
+  font-family: 'Font Awesome 6 Pro';
+  font-weight: 900;
+  font-size: 13px;
+  color: #7ac70c;
+}
+.mobile-sidebar .reader-links-mobile a:hover {
+  color: #7ac70c;
+  padding-inline-start: 10px;
+}
+
+/* La barre de défilement du plugin mobile.css n'a pas lieu d'être : c'est le tiroir qui défile */
+.mobile-sidebar ul.mobile-nav-list {
+  max-height: none;
+  overflow: visible;
+}
 /* ===== Dropdown : éléments plus grands ===== */
 .main-menu > ul > li > a {
   font-size: 18px !important;
