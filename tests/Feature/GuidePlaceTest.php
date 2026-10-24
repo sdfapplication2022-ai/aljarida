@@ -89,6 +89,35 @@ class GuidePlaceTest extends TestCase
             ->assertDontSee('<script>alert(1)</script>', false);
     }
 
+    public function test_public_detail_shows_an_embedded_map_below_related_places_when_coordinates_exist(): void
+    {
+        $place = GuidePlace::factory()->create([
+            'slug' => 'mapped-place',
+            'latitude' => 36.5,
+            'longitude' => 8.7,
+            'address' => 'وسط جندوبة',
+        ]);
+
+        $this->get(route('guide-places.show', $place))
+            ->assertOk()
+            ->assertSee('title="خريطة موقع '.$place->name.'"', false)
+            ->assertSee('https://maps.google.com/maps?q=36.5000000,8.7000000', false)
+            ->assertSee('فتح في خرائط Google');
+    }
+
+    public function test_public_detail_hides_map_when_coordinates_are_missing(): void
+    {
+        $place = GuidePlace::factory()->create([
+            'slug' => 'place-without-coordinates',
+            'latitude' => null,
+            'longitude' => null,
+        ]);
+
+        $this->get(route('guide-places.show', $place))
+            ->assertOk()
+            ->assertDontSee('title="خريطة موقع', false);
+    }
+
     public function test_staff_can_create_a_place_with_json_amenities(): void
     {
         $staff = User::factory()->create(['role' => 'editor']);

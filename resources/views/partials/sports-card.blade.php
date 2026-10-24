@@ -1,6 +1,7 @@
 @php
-  $homeWin = $result->home_score > $result->away_score;
-  $awayWin = $result->away_score > $result->home_score;
+  $isUpcoming = $isUpcoming ?? false;
+  $homeWin = ! $isUpcoming && $result->home_score > $result->away_score;
+  $awayWin = ! $isUpcoming && $result->away_score > $result->home_score;
 @endphp
 
 <article class="sp-card">
@@ -13,9 +14,14 @@
   <div class="sp-body">
     <div class="sp-top">
       <span class="sp-comp">{{ $result->competition }}</span>
-      <time class="sp-date" datetime="{{ $result->played_at->toAtomString() }}">
-        {{ $result->played_at->locale('ar')->translatedFormat('d F Y · H:i') }}
-      </time>
+      <div class="text-end">
+        <span class="d-block small fw-semibold {{ $isUpcoming ? 'text-success' : 'text-muted' }}">
+          {{ $isUpcoming ? 'قادمة' : 'انتهت' }}
+        </span>
+        <time class="sp-date" datetime="{{ $result->played_at->toAtomString() }}">
+          {{ $result->played_at->locale('ar')->translatedFormat('d F Y · H:i') }}
+        </time>
+      </div>
     </div>
 
     <div class="sp-match">
@@ -30,11 +36,15 @@
         <strong>{{ $result->home_team }}</strong>
       </div>
 
-      <div class="sp-score" dir="ltr">
-        <span class="{{ $homeWin ? 'win' : '' }}">{{ $result->home_score }}</span>
-        <small>:</small>
-        <span class="{{ $awayWin ? 'win' : '' }}">{{ $result->away_score }}</span>
-      </div>
+      @if ($isUpcoming)
+        <div class="sp-score sp-upcoming-label" dir="ltr"><span>VS</span></div>
+      @else
+        <div class="sp-score" dir="ltr">
+          <span class="{{ $homeWin ? 'win' : '' }}">{{ $result->home_score }}</span>
+          <small>:</small>
+          <span class="{{ $awayWin ? 'win' : '' }}">{{ $result->away_score }}</span>
+        </div>
+      @endif
 
       <div class="sp-team {{ $awayWin ? 'is-winner' : '' }}">
         <div class="sp-logo">

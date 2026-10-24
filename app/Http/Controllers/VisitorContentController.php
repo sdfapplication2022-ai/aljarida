@@ -28,11 +28,23 @@ class VisitorContentController extends Controller
 
     public function sports(): View
     {
-        $results = SportsResult::where('is_published', true)
+        $now = now();
+        $upcomingResults = SportsResult::query()
+            ->published()
+            ->where('played_at', '>=', $now)
+            ->orderBy('played_at')
+            ->orderBy('id')
+            ->paginate(6, ['*'], 'upcoming_page')
+            ->withQueryString();
+        $playedResults = SportsResult::query()
+            ->published()
+            ->where('played_at', '<', $now)
             ->orderByDesc('played_at')
-            ->paginate(12);
+            ->orderByDesc('id')
+            ->paginate(6, ['*'], 'played_page')
+            ->withQueryString();
 
-        return view('pages.sports-results', compact('results'));
+        return view('pages.sports-results', compact('upcomingResults', 'playedResults'));
     }
 
     public function cityNews(Request $request): View

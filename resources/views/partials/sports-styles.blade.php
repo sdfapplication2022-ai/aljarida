@@ -18,6 +18,7 @@
   .sp-logo img{width:100%!important;height:100%!important;object-fit:contain;padding:6px}
   .sp-score{display:flex;align-items:center;gap:8px;font-size:2.4rem;font-weight:800;color:#8a948f;white-space:nowrap}
   .sp-score .win{color:#14301f}
+  .sp-score.sp-upcoming-label{font-size:1.15rem;color:#7ac70c;letter-spacing:1px}
   .sp-score small{font-size:1.6rem;opacity:.6}
   .sp-place{margin:18px 0 0;text-align:center;font-size:14px;color:#6b7570}
   .sp-place i{color:#7ac70c;margin-inline-end:4px}

@@ -44,10 +44,6 @@
                   </div>
                 </dd>
               @endif
-              @if ($place->latitude !== null && $place->longitude !== null)
-                <dt class="col-sm-4">الموقع على الخريطة</dt>
-                <dd class="col-sm-8"><a href="https://www.google.com/maps?q={{ $place->latitude }},{{ $place->longitude }}" target="_blank" rel="noopener noreferrer">افتح الخريطة</a></dd>
-              @endif
             </dl>
 
             <div class="d-flex flex-wrap gap-2 mt-4">
@@ -80,8 +76,59 @@
             <a href="{{ route('guide-places.index', ['type' => $place->type, 'city' => $place->city]) }}" class="btn btn-outline-success mt-3">عرض المزيد</a>
           </div>
         </div>
+
+        @if ($place->latitude !== null && $place->longitude !== null)
+          <div class="card shadow-sm border-0 mt-4 overflow-hidden">
+            <div class="card-body p-4 pb-3">
+              <h2 class="h5 mb-1"><i class="fa-solid fa-map-location-dot text-success me-1"></i> الموقع على الخريطة</h2>
+              <p class="small text-muted mb-0">{{ $place->address ?: $place->city }}</p>
+            </div>
+            <div class="guide-place-map">
+              <iframe
+                title="خريطة موقع {{ $place->name }}"
+                src="https://maps.google.com/maps?q={{ $place->latitude }},{{ $place->longitude }}&z=15&output=embed"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="card-body p-3">
+              <a href="https://www.google.com/maps/search/?api=1&query={{ $place->latitude }},{{ $place->longitude }}"
+                 target="_blank" rel="noopener noreferrer" class="btn btn-outline-success w-100">
+                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> فتح في خرائط Google
+              </a>
+            </div>
+          </div>
+        @endif
       </aside>
     </div>
   </div>
 </div>
+
+@push('styles')
+<style>
+  .guide-place-map {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 220px;
+    background: #f1f4f2;
+  }
+
+  .guide-place-map iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (max-width: 575.98px) {
+    .guide-place-map {
+      aspect-ratio: 16 / 10;
+      min-height: 200px;
+    }
+  }
+</style>
+@endpush
 @endsection
