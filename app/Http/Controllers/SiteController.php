@@ -13,6 +13,7 @@ use App\Models\Poll;
 use App\Models\PollVote;
 use App\Models\ReaderBookmark;
 use App\Models\Service;
+use App\Models\SportsResult;
 use App\Models\Subscriber;
 use App\Models\Tag;
 use App\Models\TeamMember;
@@ -90,6 +91,10 @@ class SiteController extends Controller
                 ->take(4)->values();
 
             return compact('featured', 'breaking', 'mostRead', 'latest', 'sections') + [
+                'sportsResults' => SportsResult::where('is_published', true)
+                    ->orderByDesc('played_at')
+                    ->take(4)
+                    ->get(),
                 // Sections du site conservées
                 'about' => About::first(),
                 'services' => Service::all(),

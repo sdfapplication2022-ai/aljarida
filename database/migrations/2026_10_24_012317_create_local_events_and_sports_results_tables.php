@@ -32,6 +32,9 @@ return new class extends Migration
             $table->string('competition');
             $table->string('home_team');
             $table->string('away_team');
+            $table->string('home_logo')->nullable();   // شعار الفريق المستضيف
+            $table->string('away_logo')->nullable();   // شعار الفريق الضيف
+            $table->string('image')->nullable();       // صورة المباراة
             $table->unsignedTinyInteger('home_score');
             $table->unsignedTinyInteger('away_score');
             $table->string('city', 100)->nullable();

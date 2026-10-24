@@ -332,7 +332,30 @@
   </div>
 </div>
 @endif
-
+@if (isset($sportsResults) && $sportsResults->count())
+@include('partials.sports-styles')
+<div class="sp2">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 m-auto">
+        <div class="blog-header heading18 space-margin60 text-center">
+          <h5>الرياضة</h5>
+          <div class="space16"></div>
+          <h2>آخر النتائج</h2>
+        </div>
+      </div>
+    </div>
+    <div class="row g-4">
+      @foreach ($sportsResults as $result)
+        <div class="col-lg-6">@include('partials.sports-card', ['result' => $result])</div>
+      @endforeach
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url('/sports-results') }}" class="header-btn20">كل النتائج <i class="fa-solid fa-angle-left"></i></a>
+    </div>
+  </div>
+</div>
+@endif
 <div class="contact12-section-area sp6">
   <div class="container">
     <div class="row">
