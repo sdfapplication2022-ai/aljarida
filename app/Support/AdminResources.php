@@ -2,7 +2,21 @@
 
 namespace App\Support;
 
-use App\Models\{About, Poll, Article, Blog, Category, Comment, ContactMessage, Service, Subscriber, Tag, TeamMember, Testimonial, User};
+use App\Models\About;
+use App\Models\Article;
+use App\Models\Blog;
+use App\Models\Category;
+use App\Models\Comment;
+use App\Models\ContactMessage;
+use App\Models\LocalEvent;
+use App\Models\Poll;
+use App\Models\Service;
+use App\Models\SportsResult;
+use App\Models\Subscriber;
+use App\Models\Tag;
+use App\Models\TeamMember;
+use App\Models\Testimonial;
+use App\Models\User;
 
 /**
  * Définition déclarative de chaque CRUD de l'administration.
@@ -16,39 +30,90 @@ class AdminResources
         $img = 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096';
 
         return [
-                'articles' => [
-                    'model'    => \App\Models\Article::class,
-                    'title'    => 'المقالات',
-                    'single'   => 'مقال',
-                    'icon'     => 'fa-newspaper',
-                    'with'     => ['category', 'user'],
-                    'search'   => ['title', 'content', 'excerpt'],
-                    'slugFrom' => 'title',
-                    'formView' => 'admin.articles.form',   // 👈 vue pro dédiée
+            'articles' => [
+                'model' => Article::class,
+                'title' => 'المقالات',
+                'single' => 'مقال',
+                'icon' => 'fa-newspaper',
+                'with' => ['category', 'user'],
+                'search' => ['title', 'content', 'excerpt', 'city'],
+                'slugFrom' => 'title',
+                'formView' => 'admin.articles.form',   // 👈 vue pro dédiée
 
-                    // ⚠️ TOUS les champs doivent figurer ici pour que save() les récupère
-                    'fields' => [
-                        ['title',            'العنوان',            'text',     'required|string|max:255'],
-                        ['slug',             'الرابط',             'text',     'nullable|string|max:255'],
-                        ['excerpt',          'مقتطف',              'textarea', 'nullable|string|max:500'],
-                        ['content',          'المحتوى',            'richtext', 'required|string'],
-                        ['meta_title',       'عنوان SEO',          'text',     'nullable|string|max:70'],
-                        ['meta_description', 'وصف SEO',            'textarea', 'nullable|string|max:170'],
-                        ['image',            'الصورة البارزة',     'file',     'nullable|image|max:8192'],
-                        ['video_url',        'فيديو',              'file',     'nullable|file|mimes:mp4|max:51200'],
-                        ['category_id',      'التصنيف',            'select',   'nullable|exists:categories,id',
-                            ['source' => \App\Models\Category::class, 'label' => 'name']],
-                        ['published_at',     'تاريخ النشر',        'datetime', 'nullable|date'],
-                        ['is_published',     'منشور',              'checkbox', 'nullable|boolean'],
-                        ['is_featured',      'مميز',               'checkbox', 'nullable|boolean'],
-                    ],
-
-                    'columns' => [
-                        'title'     => 'العنوان',
-                        'is_published' => 'الحالة',
-                        'published_at' => 'تاريخ النشر',
-                    ],
+                // ⚠️ TOUS les champs doivent figurer ici pour que save() les récupère
+                'fields' => [
+                    ['title',            'العنوان',            'text',     'required|string|max:255'],
+                    ['slug',             'الرابط',             'text',     'nullable|string|max:255'],
+                    ['excerpt',          'مقتطف',              'textarea', 'nullable|string|max:500'],
+                    ['content',          'المحتوى',            'richtext', 'required|string'],
+                    ['meta_title',       'عنوان SEO',          'text',     'nullable|string|max:70'],
+                    ['meta_description', 'وصف SEO',            'textarea', 'nullable|string|max:170'],
+                    ['image',            'الصورة البارزة',     'file',     'nullable|image|max:8192'],
+                    ['video_url',        'فيديو',              'file',     'nullable|file|mimes:mp4|max:51200'],
+                    ['category_id',      'التصنيف',            'select',   'nullable|exists:categories,id',
+                        ['source' => Category::class, 'label' => 'name']],
+                    ['city', 'المدينة', 'text', 'nullable|string|max:100'],
+                    ['published_at',     'تاريخ النشر',        'datetime', 'nullable|date'],
+                    ['is_published',     'منشور',              'checkbox', 'nullable|boolean'],
+                    ['is_featured',      'مميز',               'checkbox', 'nullable|boolean'],
                 ],
+
+                'columns' => [
+                    'title' => 'العنوان',
+                    'city' => 'المدينة',
+                    'is_published' => 'الحالة',
+                    'published_at' => 'تاريخ النشر',
+                ],
+            ],
+            'events' => [
+                'model' => LocalEvent::class,
+                'title' => 'دليل الفعاليات',
+                'single' => 'فعالية',
+                'icon' => 'fa-calendar-days',
+                'search' => ['title', 'city', 'venue'],
+                'columns' => [
+                    'title' => 'العنوان',
+                    'city' => 'المدينة',
+                    'starts_at' => 'موعد الفعالية',
+                    'is_published' => 'الحالة',
+                ],
+                'fields' => [
+                    ['title', 'العنوان', 'text', 'required|string|max:255'],
+                    ['summary', 'ملخص قصير', 'textarea', 'nullable|string|max:500'],
+                    ['description', 'التفاصيل', 'richtext', 'nullable|string'],
+                    ['city', 'المدينة', 'text', 'required|string|max:100'],
+                    ['venue', 'المكان', 'text', 'nullable|string|max:255'],
+                    ['organizer', 'المنظم', 'text', 'nullable|string|max:255'],
+                    ['url', 'رابط الحجز أو المزيد', 'url', 'nullable|url|max:255'],
+                    ['starts_at', 'موعد البدء', 'datetime', 'required|date'],
+                    ['ends_at', 'موعد الانتهاء', 'datetime', 'nullable|date|after_or_equal:starts_at'],
+                    ['is_published', 'منشور', 'checkbox', 'nullable|boolean'],
+                ],
+            ],
+            'sports' => [
+                'model' => SportsResult::class,
+                'title' => 'نتائج الرياضة',
+                'single' => 'نتيجة مباراة',
+                'icon' => 'fa-futbol',
+                'search' => ['competition', 'home_team', 'away_team', 'city'],
+                'columns' => [
+                    'competition' => 'المسابقة',
+                    'home_team' => 'الفريق المضيف',
+                    'away_team' => 'الفريق الضيف',
+                    'played_at' => 'تاريخ المباراة',
+                ],
+                'fields' => [
+                    ['competition', 'المسابقة', 'text', 'required|string|max:255'],
+                    ['home_team', 'الفريق المضيف', 'text', 'required|string|max:255'],
+                    ['away_team', 'الفريق الضيف', 'text', 'required|string|max:255'],
+                    ['home_score', 'أهداف الفريق المضيف', 'text', 'required|integer|min:0|max:99'],
+                    ['away_score', 'أهداف الفريق الضيف', 'text', 'required|integer|min:0|max:99'],
+                    ['city', 'المدينة', 'text', 'nullable|string|max:100'],
+                    ['venue', 'الملعب', 'text', 'nullable|string|max:255'],
+                    ['played_at', 'تاريخ المباراة', 'datetime', 'required|date'],
+                    ['is_published', 'منشور', 'checkbox', 'nullable|boolean'],
+                ],
+            ],
             'categories' => [
                 'model' => Category::class, 'title' => 'الأقسام', 'single' => 'قسم', 'icon' => 'fa-folder', 'slugFrom' => 'name',
                 'columns' => ['id' => '#', 'name' => 'الاسم', 'slug' => 'الرابط'], 'search' => ['name'],
@@ -67,12 +132,12 @@ class AdminResources
                 ],
             ],
             'blogs' => [
-                'model'    => Blog::class,
-                'title'    => 'المدونات',
-                'single'   => 'مدونة',
-                'icon'     => 'fa-blog',
-                'with'     => [],
-                'search'   => ['title', 'content', 'author', 'excerpt'],
+                'model' => Blog::class,
+                'title' => 'المدونات',
+                'single' => 'مدونة',
+                'icon' => 'fa-blog',
+                'with' => [],
+                'search' => ['title', 'content', 'author', 'excerpt'],
                 'formView' => 'admin.blogs.form',
 
                 'fields' => [
@@ -82,20 +147,20 @@ class AdminResources
                     ['meta_title',       'عنوان SEO', 'text',     'nullable|string|max:70'],
                     ['meta_description', 'وصف SEO',   'textarea', 'nullable|string|max:170'],
                     ['author',           'الكاتب',    'text',     'required|string|max:255'],
-                    ['published_at',     'تاريخ النشر','datetime','nullable|date'],
+                    ['published_at',     'تاريخ النشر', 'datetime', 'nullable|date'],
                     ['image',            'الصورة',    'file',     'nullable|image|max:8192'],
                 ],
 
                 'columns' => [
-                    'title'        => 'العنوان',
-                    'author'       => 'الكاتب',
+                    'title' => 'العنوان',
+                    'author' => 'الكاتب',
                     'published_at' => 'تاريخ النشر',
                 ],
             ],
             'comments' => [
                 'model' => Comment::class, 'title' => 'التعليقات', 'single' => 'تعليق', 'icon' => 'fa-comments', 'create' => false,
                 'with' => ['article', 'user'], 'columns' => ['id' => '#', 'content' => 'التعليق', 'author_name' => 'الاسم', 'guest_email' => 'البريد',
-              'article.title' => 'المقال', 'is_approved' => 'مقبول'], 'search' => ['content'],
+                    'article.title' => 'المقال', 'is_approved' => 'مقبول'], 'search' => ['content'],
                 'fields' => [
                     ['content', 'التعليق', 'textarea', 'required|string'],
                     ['is_approved', 'مقبول', 'checkbox', 'boolean'],

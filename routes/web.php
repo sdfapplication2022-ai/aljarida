@@ -1,11 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\{AuthController, DashboardController, ResourceController};
-use App\Http\Controllers\SiteController;
-use App\Http\Middleware\StaffOnly;
-use App\Http\Controllers\SeoController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ResourceController;
 use App\Http\Controllers\PollController;
+use App\Http\Controllers\ReaderController;
+use App\Http\Controllers\SeoController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\VisitorContentController;
+use App\Http\Middleware\StaffOnly;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/ping', [SiteController::class, 'ping'])->name('ping');
 Route::post('/poll/{poll}/vote', [PollController::class, 'vote'])
     ->name('poll.vote')->whereNumber('poll')->middleware('throttle:20,1');
@@ -13,6 +18,11 @@ Route::get('/search/suggest', [SiteController::class, 'suggest'])->name('search.
 // ---------- Site public ----------
 Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::get('/search', [SiteController::class, 'search'])->name('search')->middleware('throttle:30,1');
+Route::get('/saved-articles', [ReaderController::class, 'saved'])->name('reader.saved');
+Route::post('/article/{article}/save', [ReaderController::class, 'toggleSaved'])->name('article.save')->middleware('throttle:30,1');
+Route::get('/events', [VisitorContentController::class, 'events'])->name('events.index');
+Route::get('/sports-results', [VisitorContentController::class, 'sports'])->name('sports.results');
+Route::get('/news-by-city', [VisitorContentController::class, 'cityNews'])->name('city-news');
 Route::get('/tag/{slug}', [SiteController::class, 'tag'])->name('tag');
 Route::get('/author/{user}', [SiteController::class, 'author'])->name('author')->whereNumber('user');
 Route::delete('/comment/{comment}', [SiteController::class, 'destroyComment'])

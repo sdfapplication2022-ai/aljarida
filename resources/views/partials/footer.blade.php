@@ -8,9 +8,9 @@
           <p>الجريدة منصة إخبارية شاملة تقدم لكم الخبر الدقيق والتحليل المعمق في مختلف المجالات.</p>
           <div class="space24"></div>
           <ul>
-            <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
+            <li><a href="https://www.facebook.com/raoudha.mediouni"><i class="fa-brands fa-facebook-f"></i></a></li>
             <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-            <li><a href="#"><i class="fa-brands fa-linkedin-in"></i></a></li>
+            <li><a href="https://www.linkedin.com/in/raoudhamediouni/"><i class="fa-brands fa-linkedin-in"></i></a></li>
             <li><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
           </ul>
         </div>
@@ -47,12 +47,12 @@
             <div class="text"><a href="tel:+21690033504" dir="ltr">+216 90 033 504</a></div>
           </div>
           <div class="icons-area">
-            <div class="icons"><i class="fa-solid fa-location-dot"></i></div>
-            <div class="text"><a href="#">جندوبة، تونس</a></div>
+            <div class="icons"><i class="fa-brands fa-linkedin"></i></div>
+            <div class="text"><a href="https://www.linkedin.com/in/raoudhamediouni/" target="_blank">Raoudha Medioni</a></div>
           </div>
           <div class="icons-area">
             <div class="icons"><i class="fa-solid fa-envelope"></i></div>
-            <div class="text"><a href="mailto:info@aljareeda.tn">info@aljareeda.tn</a></div>
+            <div class="text"><a href="mailto:raoudhamediouni@gmail.com">raoudhamediouni@gmail.com</a></div>
           </div>
         </div>
       </div>

@@ -47,6 +47,9 @@
               @if ($article->category)
                 <li><a href="{{ route('category', $article->category->slug) }}"><i class="fa-regular fa-folder"></i> {{ $article->category->name }}</a></li>
               @endif
+              @if ($article->city)
+                <li><a href="{{ route('city-news', ['city' => $article->city]) }}"><i class="fa-solid fa-location-dot"></i> {{ $article->city }}</a></li>
+              @endif
             </ul>
           </div>
 
@@ -54,6 +57,14 @@
           <div class="space34"></div>
 
           @include('partials.article-tools')
+          @include('partials.reading-mode')
+          <form action="{{ route('article.save', $article) }}" method="POST" class="my-3">
+            @csrf
+            <button type="submit" class="btn btn-outline-success">
+              <i class="fa-{{ $isSaved ? 'solid' : 'regular' }} fa-bookmark" aria-hidden="true"></i>
+              {{ $isSaved ? 'إزالة من قائمة القراءة لاحقًا' : 'أضف إلى قائمة القراءة لاحقًا' }}
+            </button>
+          </form>
           @include('partials.article-toc')
 
           @if ($article->image_url)

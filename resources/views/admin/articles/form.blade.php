@@ -155,6 +155,18 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="article-city" class="form-label fw-bold small">المدينة</label>
+                        <input type="text" id="article-city" name="city" list="tunisia-cities"
+                               value="{{ old('city', $item->city) }}" maxlength="100" class="form-control"
+                               placeholder="جندوبة، طبرقة، بوسالم...">
+                        <datalist id="tunisia-cities">
+                            @foreach (['جندوبة', 'طبرقة', 'بوسالم', 'غار الدماء', 'فرنانة', 'عين دراهم', 'بلطة بوعوان', 'وادي مليز'] as $city)
+                                <option value="{{ $city }}">
+                            @endforeach
+                        </datalist>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-bold small">تاريخ النشر</label>
                         <input type="datetime-local" name="published_at"
                                value="{{ old('published_at', optional($item->published_at)->format('Y-m-d\TH:i')) }}"

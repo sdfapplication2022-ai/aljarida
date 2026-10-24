@@ -42,6 +42,16 @@
                 <li>
                   <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">اتصل بنا</a>
                 </li>
+
+                <li class="has-dropdown">
+                  <a href="#" class="dropdown-toggle-link" aria-haspopup="true" aria-expanded="false">اكتشف المزيد <i class="fa-solid fa-angle-down"></i></a>
+                  <ul class="nav-dropdown">
+                    <li><a href="{{ route('reader.saved') }}">للقراءة لاحقًا</a></li>
+                    <li><a href="{{ route('events.index') }}">دليل الفعاليات</a></li>
+                    <li><a href="{{ route('city-news') }}">أخبار المدن</a></li>
+                    <li><a href="{{ route('sports.results') }}">نتائج الرياضة</a></li>
+                  </ul>
+                </li>
               </ul>
             </nav>
 
@@ -116,6 +126,13 @@
         <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">اتصل بنا</a>
       </li>
     </ul>
+
+    <div class="reader-links-mobile mb-3">
+      <a href="{{ route('reader.saved') }}">للقراءة لاحقًا</a>
+      <a href="{{ route('events.index') }}">دليل الفعاليات</a>
+      <a href="{{ route('city-news') }}">أخبار المدن</a>
+      <a href="{{ route('sports.results') }}">نتائج الرياضة</a>
+    </div>
 
     <div class="allmobilesection">
       <a href="{{ route('subscribe') }}" class="header-btn20" style="width: 100%; text-align: center; margin-bottom: 20px;">

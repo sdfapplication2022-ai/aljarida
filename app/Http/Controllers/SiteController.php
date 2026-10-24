@@ -2,7 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{About, Article, ArticleLike, Blog, Category, Comment, ContactMessage, Service, Subscriber, Tag, TeamMember, Testimonial, User, Poll, PollVote};
+use App\Models\About;
+use App\Models\Article;
+use App\Models\ArticleLike;
+use App\Models\Blog;
+use App\Models\Category;
+use App\Models\Comment;
+use App\Models\ContactMessage;
+use App\Models\Poll;
+use App\Models\PollVote;
+use App\Models\ReaderBookmark;
+use App\Models\Service;
+use App\Models\Subscriber;
+use App\Models\Tag;
+use App\Models\TeamMember;
+use App\Models\Testimonial;
+use App\Models\User;
 use App\Services\Widgets;
 use App\Support\AdminNotifier;
 use App\Support\Visitor;
@@ -16,6 +31,7 @@ class SiteController extends Controller
     {
         return response('ok', 200);
     }
+
     public function home(Request $request)
     {
         // Pas de cache des modèles Eloquent : Laravel 12 refuse de les désérialiser (voir cache.serializable_classes)
@@ -75,11 +91,11 @@ class SiteController extends Controller
 
             return compact('featured', 'breaking', 'mostRead', 'latest', 'sections') + [
                 // Sections du site conservées
-                'about'        => About::first(),
-                'services'     => Service::all(),
+                'about' => About::first(),
+                'services' => Service::all(),
                 'testimonials' => Testimonial::latest()->take(6)->get(),
-                'team'         => TeamMember::all(),
-                'blogs'        => Blog::latest('published_at')->take(3)->get(),
+                'team' => TeamMember::all(),
+                'blogs' => Blog::latest('published_at')->take(3)->get(),
             ];
         })();
 
@@ -103,8 +119,8 @@ class SiteController extends Controller
         }
 
         return [
-            'widgets'  => app(Widgets::class)->all(),
-            'poll'     => $poll,
+            'widgets' => app(Widgets::class)->all(),
+            'poll' => $poll,
             'pollVote' => $pollVote,
         ];
     }
@@ -113,6 +129,7 @@ class SiteController extends Controller
     {
         $category = Category::where('slug', $slug)->firstOrFail();
         $articles = $category->articles()->published()->with('user')->latest('published_at')->paginate(9);
+
         return view('pages.category', compact('category', 'articles'));
     }
 
@@ -142,8 +159,8 @@ class SiteController extends Controller
             ->latest('published_at')->take(6)->get(['id', 'title', 'slug', 'category_id']);
 
         return response()->json($items->map(fn ($a) => [
-            'title'    => $a->title,
-            'url'      => route('article', $a->slug),
+            'title' => $a->title,
+            'url' => route('article', $a->slug),
             'category' => $a->category?->name,
         ])->values());
     }
@@ -156,101 +173,110 @@ class SiteController extends Controller
 
         return view('pages.tag', compact('tag', 'articles'));
     }
-public function article(Request $request, string $slug)
-{
-    $article = Article::published()->with(['category', 'user', 'tags'])->withCount('likes')
-        ->where('slug', $slug)->firstOrFail();
-    $article->increment('views');
 
-    $user  = $request->user();
-    $token = Visitor::existing($request);
+    public function article(Request $request, string $slug)
+    {
+        $article = Article::published()->with(['category', 'user', 'tags'])->withCount('likes')
+            ->where('slug', $slug)->firstOrFail();
+        $article->increment('views');
 
-    $comments = $article->comments()
-        ->where(function ($q) use ($token, $user) {
-            $q->where('is_approved', true);
-            if ($token) { $q->orWhere('visitor_token', $token); }
-            if ($user)  { $q->orWhere('user_id', $user->id); }
-        })
-        ->with('user')->latest()->get();
+        $user = $request->user();
+        $token = Visitor::existing($request);
+        $readerKey = $user ? 'user:'.$user->getAuthIdentifier() : ($token ? 'visitor:'.$token : null);
+        $isSaved = $readerKey && ReaderBookmark::where('reader_key', $readerKey)
+            ->where('article_id', $article->id)->exists();
 
-    $liked = ($user || $token) && ArticleLike::where('article_id', $article->id)
-        ->where($user ? ['user_id' => $user->id] : ['visitor_token' => $token])
-        ->exists();
+        $comments = $article->comments()
+            ->where(function ($q) use ($token, $user) {
+                $q->where('is_approved', true);
+                if ($token) {
+                    $q->orWhere('visitor_token', $token);
+                }
+                if ($user) {
+                    $q->orWhere('user_id', $user->id);
+                }
+            })
+            ->with('user')->latest()->get();
 
-    $guest = (! $user && $token)
-        ? Comment::where('visitor_token', $token)->whereNotNull('guest_name')->latest()->first(['guest_name', 'guest_email'])
-        : null;
+        $liked = ($user || $token) && ArticleLike::where('article_id', $article->id)
+            ->where($user ? ['user_id' => $user->id] : ['visitor_token' => $token])
+            ->exists();
 
-    $tagIds = $article->tags->pluck('id')->all();
-    $related = Article::published()->where('id', '!=', $article->id)
-        ->where(function ($q) use ($article, $tagIds) {
-            $q->where('category_id', $article->category_id);
-            if ($tagIds) {
-                $q->orWhereHas('tags', fn ($t) => $t->whereIn('tags.id', $tagIds));
-            }
-        })
-        ->withCount(['tags as shared_tags' => fn ($t) => $t->whereIn('tags.id', $tagIds ?: [0])])
-        ->orderByDesc('shared_tags')->latest('published_at')->take(3)->get();
+        $guest = (! $user && $token)
+            ? Comment::where('visitor_token', $token)->whereNotNull('guest_name')->latest()->first(['guest_name', 'guest_email'])
+            : null;
 
-    $older = Article::published()->where('id', '<', $article->id)->orderByDesc('id')->first(['id', 'title', 'slug']);
-    $newer = Article::published()->where('id', '>', $article->id)->orderBy('id')->first(['id', 'title', 'slug']);
+        $tagIds = $article->tags->pluck('id')->all();
+        $related = Article::published()->where('id', '!=', $article->id)
+            ->where(function ($q) use ($article, $tagIds) {
+                $q->where('category_id', $article->category_id);
+                if ($tagIds) {
+                    $q->orWhereHas('tags', fn ($t) => $t->whereIn('tags.id', $tagIds));
+                }
+            })
+            ->withCount(['tags as shared_tags' => fn ($t) => $t->whereIn('tags.id', $tagIds ?: [0])])
+            ->orderByDesc('shared_tags')->latest('published_at')->take(3)->get();
 
-    $mostRead = Article::published()->with('category')
-        ->where('id', '!=', $article->id)->orderByDesc('views')->take(5)->get();
+        $older = Article::published()->where('id', '<', $article->id)->orderByDesc('id')->first(['id', 'title', 'slug']);
+        $newer = Article::published()->where('id', '>', $article->id)->orderBy('id')->first(['id', 'title', 'slug']);
 
-    // Nouveaux widgets de la sidebar
-    $latestComments = Comment::where('is_approved', true)
-        ->whereNotNull('article_id')
-        ->with(['user:id,name', 'article:id,slug,title'])
-        ->latest()
-        ->take(5)
-        ->get(['id','content','user_id','guest_name','article_id','created_at']);
+        $mostRead = Article::published()->with('category')
+            ->where('id', '!=', $article->id)->orderByDesc('views')->take(5)->get();
 
-    $popularTags = \App\Models\Tag::withCount('articles')
-        ->having('articles_count', '>', 0)
-        ->orderByDesc('articles_count')
-        ->take(15)
-        ->get(['id','name','slug']);
+        // Nouveaux widgets de la sidebar
+        $latestComments = Comment::where('is_approved', true)
+            ->whereNotNull('article_id')
+            ->with(['user:id,name', 'article:id,slug,title'])
+            ->latest()
+            ->take(5)
+            ->get(['id', 'content', 'user_id', 'guest_name', 'article_id', 'created_at']);
 
-    return view('pages.article', [
-        'article' => $article, 'comments' => $comments, 'related' => $related,
-        'liked' => $liked, 'guest' => $guest, 'visitorToken' => $token,
-        'latestComments' => $latestComments, 'popularTags' => $popularTags,
-    ] + $this->widgetsData($request) + compact('mostRead', 'older', 'newer'));
-}
+        $popularTags = Tag::withCount('articles')
+            ->having('articles_count', '>', 0)
+            ->orderByDesc('articles_count')
+            ->take(15)
+            ->get(['id', 'name', 'slug']);
 
-public function blog(int $id)
-{
-    $blog = Blog::published()->findOrFail($id);
-    return view('pages.blog', [
-        'blog'   => $blog,
-        'others' => Blog::published()->where('id', '!=', $blog->id)
-                        ->latest('published_at')->take(8)->get(),
-    ]);
-}
-
-public function like(Request $request, Article $article)
-{
-    abort_unless($article->is_published, 404);
-
-    $user = $request->user();
-    $who  = $user ? ['user_id' => $user->id] : ['visitor_token' => Visitor::token($request)];
-
-    $existing = ArticleLike::where('article_id', $article->id)->where($who)->first();
-    if ($existing) {
-        $existing->delete();
-        $liked = false;
-    } else {
-        ArticleLike::firstOrCreate(['article_id' => $article->id] + $who, ['ip' => $request->ip()]);
-        $liked = true;
+        return view('pages.article', [
+            'article' => $article, 'comments' => $comments, 'related' => $related,
+            'liked' => $liked, 'isSaved' => $isSaved, 'guest' => $guest, 'visitorToken' => $token,
+            'latestComments' => $latestComments, 'popularTags' => $popularTags,
+        ] + $this->widgetsData($request) + compact('mostRead', 'older', 'newer'));
     }
 
-    if ($request->wantsJson()) {
-        return response()->json(['liked' => $liked, 'count' => $article->likes()->count()]);
-    }
-    return back();
-}
+    public function blog(int $id)
+    {
+        $blog = Blog::published()->findOrFail($id);
 
+        return view('pages.blog', [
+            'blog' => $blog,
+            'others' => Blog::published()->where('id', '!=', $blog->id)
+                ->latest('published_at')->take(8)->get(),
+        ]);
+    }
+
+    public function like(Request $request, Article $article)
+    {
+        abort_unless($article->is_published, 404);
+
+        $user = $request->user();
+        $who = $user ? ['user_id' => $user->id] : ['visitor_token' => Visitor::token($request)];
+
+        $existing = ArticleLike::where('article_id', $article->id)->where($who)->first();
+        if ($existing) {
+            $existing->delete();
+            $liked = false;
+        } else {
+            ArticleLike::firstOrCreate(['article_id' => $article->id] + $who, ['ip' => $request->ip()]);
+            $liked = true;
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['liked' => $liked, 'count' => $article->likes()->count()]);
+        }
+
+        return back();
+    }
 
     public function author(User $user)
     {
@@ -274,17 +300,17 @@ public function like(Request $request, Article $article)
             'website' => 'prohibited', // honeypot anti-robots
         ];
         if (! $user) {
-            $rules['guest_name']  = 'required|string|min:2|max:100';
+            $rules['guest_name'] = 'required|string|min:2|max:100';
             $rules['guest_email'] = 'required|email|max:255';
         }
         $data = $request->validate($rules);
 
         $comment = Comment::create([
-            'content'       => strip_tags($data['content']),
-            'article_id'    => $article->id,
-            'is_approved'   => true,
-            'guest_name'    => $user ? null : strip_tags($data['guest_name']),
-            'guest_email'   => $user ? null : $data['guest_email'],
+            'content' => strip_tags($data['content']),
+            'article_id' => $article->id,
+            'is_approved' => true,
+            'guest_name' => $user ? null : strip_tags($data['guest_name']),
+            'guest_email' => $user ? null : $data['guest_email'],
             'visitor_token' => Visitor::token($request),
         ]);
 
@@ -305,11 +331,11 @@ public function like(Request $request, Article $article)
             ->with('success', 'تم حذف تعليقك.');
     }
 
-
     public function contactPage()
     {
-        return view('pages.contact', ['services' => \App\Models\Service::all()]);
+        return view('pages.contact', ['services' => Service::all()]);
     }
+
     public function contact(Request $request)
     {
         $msg = ContactMessage::create($request->validate([
@@ -322,20 +348,28 @@ public function like(Request $request, Article $article)
         ]));
 
         AdminNotifier::contactMessage($msg);
+
         return back()->with('success', 'تم إرسال رسالتك بنجاح، سنرد عليك قريبًا.');
     }
 
-    public function subscribePage() { return view('pages.subscribe'); }
+    public function subscribePage()
+    {
+        return view('pages.subscribe');
+    }
 
     public function subscribe(Request $request)
     {
         $data = $request->validate([
-            'email'   => 'required|email|max:255',
+            'email' => 'required|email|max:255',
             'website' => 'prohibited', // honeypot
         ]);
         Subscriber::updateOrCreate(['email' => $data['email']], ['is_active' => true]);
+
         return back()->with('success', 'تم اشتراكك في النشرة البريدية. شكرًا لك!');
     }
 
-    public function team() { return view('pages.team', ['team' => TeamMember::all(), 'about' => About::first()]); }
+    public function team()
+    {
+        return view('pages.team', ['team' => TeamMember::all(), 'about' => About::first()]);
+    }
 }

@@ -15,13 +15,13 @@ class Article extends Model
     protected $fillable = [
         'title', 'slug', 'excerpt', 'content',
         'meta_title', 'meta_description',
-        'image', 'video_url', 'category_id', 'user_id',
+        'image', 'video_url', 'category_id', 'city', 'user_id',
         'is_published', 'is_featured', 'published_at', 'views',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
-        'is_featured'  => 'boolean',
+        'is_featured' => 'boolean',
         'published_at' => 'datetime',
     ];
 
@@ -56,7 +56,7 @@ class Article extends Model
     public function scopePublished(Builder $q): Builder
     {
         return $q->where('is_published', true)
-                 ->where(fn ($w) => $w->whereNull('published_at')->orWhere('published_at', '<=', now()));
+            ->where(fn ($w) => $w->whereNull('published_at')->orWhere('published_at', '<=', now()));
     }
 
     /** Recherche publique : titre, contenu, tags, catégorie. Titre exact en premier. */
@@ -65,11 +65,11 @@ class Article extends Model
         $like = '%'.addcslashes($term, '\\%_').'%';
 
         return $query->where(function ($w) use ($like) {
-                $w->where('title', 'like', $like)
-                  ->orWhere('content', 'like', $like)
-                  ->orWhereHas('tags', fn ($t) => $t->where('name', 'like', $like))
-                  ->orWhereHas('category', fn ($c) => $c->where('name', 'like', $like));
-            })
+            $w->where('title', 'like', $like)
+                ->orWhere('content', 'like', $like)
+                ->orWhereHas('tags', fn ($t) => $t->where('name', 'like', $like))
+                ->orWhereHas('category', fn ($c) => $c->where('name', 'like', $like));
+        })
             ->orderByRaw('CASE WHEN title LIKE ? THEN 0 ELSE 1 END', [$like])
             ->latest('published_at');
     }
@@ -86,7 +86,7 @@ class Article extends Model
 
     public function setImageAttribute($value): void
     {
-        $this->uploadFile($value, 'image', 'uploads/articles', ['jpg','jpeg','png','webp']);
+        $this->uploadFile($value, 'image', 'uploads/articles', ['jpg', 'jpeg', 'png', 'webp']);
     }
 
     public function setVideoUrlAttribute($value): void
@@ -104,16 +104,36 @@ class Article extends Model
         return $this->fileUrl($this->attributes['video_url'] ?? null);
     }
 
-    public function category() { return $this->belongsTo(Category::class); }
-    public function user()     { return $this->belongsTo(User::class); }
-    public function comments() { return $this->hasMany(Comment::class); }
-    public function tags()     { return $this->belongsToMany(Tag::class); }
-    public function likes()    { return $this->hasMany(ArticleLike::class); }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(ArticleLike::class);
+    }
 
     public function getEstimatedReadingTimeAttribute(): int
     {
-        $text  = strip_tags((string) $this->content);
+        $text = strip_tags((string) $this->content);
         $words = preg_match_all('/\p{L}+/u', $text, $m) ?: 0;
+
         return max(1, (int) ceil($words / 200));
     }
 
@@ -140,6 +160,7 @@ class Article extends Model
                 foreach (explode('_', $h[1]) as $hex) {
                     $out .= mb_chr(hexdec($hex), 'UTF-8');
                 }
+
                 return $out;
             },
             $html
@@ -178,7 +199,7 @@ class Article extends Model
 
             if (preg_match('/\p{L}/u', $text, $l)) {
                 $isRtl = preg_match('/[\x{0590}-\x{08FF}\x{FB1D}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $l[0]);
-                $dir   = $isRtl ? 'rtl' : 'ltr';
+                $dir = $isRtl ? 'rtl' : 'ltr';
             } else {
                 $dir = 'rtl'; // pas de lettre (ex. emoji seul) : direction du site
             }
@@ -198,6 +219,7 @@ class Article extends Model
             return $manual;
         }
         $text = html_entity_decode(strip_tags((string) $this->content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
         return Str::limit(trim(preg_replace('/\s+/u', ' ', $text)), 140);
     }
 
@@ -213,20 +235,20 @@ class Article extends Model
     public function toJsonLd(): array
     {
         return array_filter([
-            '@context'         => 'https://schema.org',
-            '@type'            => 'NewsArticle',
-            'headline'         => Str::limit($this->title, 110, ''),
-            'description'      => Str::limit(strip_tags($this->content), 160),
+            '@context' => 'https://schema.org',
+            '@type' => 'NewsArticle',
+            'headline' => Str::limit($this->title, 110, ''),
+            'description' => Str::limit(strip_tags($this->content), 160),
             'mainEntityOfPage' => route('article', $this->slug),
-            'image'            => $this->image_url ? [$this->image_url] : null,
-            'datePublished'    => optional($this->published_at ?? $this->created_at)->toAtomString(),
-            'dateModified'     => optional($this->updated_at)->toAtomString(),
-            'inLanguage'       => 'ar',
-            'author'           => [['@type' => 'Person', 'name' => $this->user->name ?? 'التحرير']],
-            'publisher'        => [
+            'image' => $this->image_url ? [$this->image_url] : null,
+            'datePublished' => optional($this->published_at ?? $this->created_at)->toAtomString(),
+            'dateModified' => optional($this->updated_at)->toAtomString(),
+            'inLanguage' => 'ar',
+            'author' => [['@type' => 'Person', 'name' => $this->user->name ?? 'التحرير']],
+            'publisher' => [
                 '@type' => 'Organization',
-                'name'  => config('app.name'),
-                'logo'  => ['@type' => 'ImageObject', 'url' => asset('assets/img/logo/logo.png')],
+                'name' => config('app.name'),
+                'logo' => ['@type' => 'ImageObject', 'url' => asset('assets/img/logo/logo.png')],
             ],
         ]);
     }
